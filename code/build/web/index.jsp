@@ -209,7 +209,9 @@
 
         <h1>Just On Time</h1>
         <h2>US Flight Delay Analysis</h2>
-
+        
+        
+        
         <!--
                 <p><b>Crossfilter</b> is a <a href="https://github.com/square/crossfilter">JavaScript library</a> for exploring large multivariate datasets in the browser. Crossfilter supports extremely fast (&lt;30ms) interaction with coordinated views, even with datasets containing a million or more records; we built it to power analytics for <a href="https://squareup.com/register">Square Register</a>, allowing merchants to slice and dice their payment history fluidly.
                 <p>Since most interactions only involve a single dimension, and then only small adjustments are made to the filter values, incremental filtering and reducing is significantly faster than starting from scratch. Crossfilter uses sorted indexes (and a few bit-twiddling hacks) to make this possible, dramatically increasing the perfor&shy;mance of live histograms and top-<i>K</i> lists. For more details on how Crossfilter works, see the <a href="https://github.com/square/crossfilter/wiki/API-Reference">API reference</a>.
@@ -271,6 +273,8 @@
                 </div><!-- /.navbar-collapse -->
             </div><!-- /.container-fluid -->
         </nav>
+        
+        <input type="file" id="input" class="button">
 
         <!-- map -->
         <div id="map"></div>
@@ -323,6 +327,7 @@
 
     <script>
         cf();
+        init_upload();
         init_map();
         calendar();
     </script>

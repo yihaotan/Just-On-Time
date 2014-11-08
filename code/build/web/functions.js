@@ -9,6 +9,29 @@ function init_map() {
 
 }
 
+function init_upload() {
+
+    var inputElement = document.getElementById("input");
+    inputElement.addEventListener("change", handleFiles, false);
+    function handleFiles() {
+        var fileList = this.files; /* now you can work with the file list */
+        var first_file = fileList[0];
+        // Create a new FileReader object
+        var reader = new FileReader();
+        // Read the file as Text String (not raw binary string)
+        reader.readAsText(first_file);
+        // Upon loading data successfully, convert it to JSON object
+        reader.onload = function() {
+            alert("The reading operation is successfully completed.");
+            var geoJSON = csvJSON(reader.result);
+            alert(JSON.stringify(geoJSON));
+            init_function(geoJSON);
+
+        };
+    }
+
+}
+
 function cf() {
 
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
@@ -508,5 +531,49 @@ function calendar() {
     }
 
     d3.select(self.frameElement).style("height", "2910px");
+
+}
+
+// This method converts a csv (as Text String) into a well-formed JSON object
+function csvJSON(csv) {
+    
+    var lines = csv.split("\n");
+    var result = [];
+
+    // var headers = lines[0].split(",");
+    // The headers are modified to conform to naming convention for JSON
+    var headers = ["ID", "LABEL", "LAT","LON"];
+
+    for (var i = 1; i < lines.length; i++) {
+
+        var properties = {};
+
+        var currentline = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+            properties[headers[j]] = currentline[j];
+        }
+
+        var lat_str = properties["LAT"];
+        var lon_str = properties["LON"];
+        var lat = parseFloat(lat_str.replace("/r", ""));
+        var lon = parseFloat(lon_str.replace("/r", ""));
+
+        var record = {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [lat, lon]
+            }
+        };
+
+        result.push(record);
+        alert(JSON.stringify(record));
+
+    }
+
+
+    // alert(JSON.stringify(result));
+    return result; //JavaScript object
 
 }
