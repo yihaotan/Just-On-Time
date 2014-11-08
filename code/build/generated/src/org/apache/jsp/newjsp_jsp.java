@@ -1,0 +1,270 @@
+package org.apache.jsp;
+
+import javax.servlet.*;
+import javax.servlet.http.*;
+import javax.servlet.jsp.*;
+
+public final class newjsp_jsp extends org.apache.jasper.runtime.HttpJspBase
+    implements org.apache.jasper.runtime.JspSourceDependent {
+
+  private static final JspFactory _jspxFactory = JspFactory.getDefaultFactory();
+
+  private static java.util.List<String> _jspx_dependants;
+
+  private org.glassfish.jsp.api.ResourceInjector _jspx_resourceInjector;
+
+  public java.util.List<String> getDependants() {
+    return _jspx_dependants;
+  }
+
+  public void _jspService(HttpServletRequest request, HttpServletResponse response)
+        throws java.io.IOException, ServletException {
+
+    PageContext pageContext = null;
+    HttpSession session = null;
+    ServletContext application = null;
+    ServletConfig config = null;
+    JspWriter out = null;
+    Object page = this;
+    JspWriter _jspx_out = null;
+    PageContext _jspx_page_context = null;
+
+    try {
+      response.setContentType("text/html;charset=UTF-8");
+      pageContext = _jspxFactory.getPageContext(this, request, response,
+      			null, true, 8192, true);
+      _jspx_page_context = pageContext;
+      application = pageContext.getServletContext();
+      config = pageContext.getServletConfig();
+      session = pageContext.getSession();
+      out = pageContext.getOut();
+      _jspx_out = out;
+      _jspx_resourceInjector = (org.glassfish.jsp.api.ResourceInjector) application.getAttribute("com.sun.appserv.jsp.resource.injector");
+
+      out.write("\n");
+      out.write("<!DOCTYPE html>\n");
+      out.write("<html>\n");
+      out.write("    <head>\n");
+      out.write("        <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\">\n");
+      out.write("        <title>JSP Page</title>\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("        <style>\n");
+      out.write("\n");
+      out.write("            @import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:400,700);\n");
+      out.write("\n");
+      out.write("            body {\n");
+      out.write("                font-family: \"Helvetica Neue\";\n");
+      out.write("                margin: 40px auto;\n");
+      out.write("                width: 960px;\n");
+      out.write("                min-height: 2000px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #body {\n");
+      out.write("                position: relative;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            footer {\n");
+      out.write("                padding: 2em 0 1em 0;\n");
+      out.write("                font-size: 12px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            h1 {\n");
+      out.write("                font-size: 96px;\n");
+      out.write("                margin-top: .3em;\n");
+      out.write("                margin-bottom: 0;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            h1 + h2 {\n");
+      out.write("                margin-top: 0;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            h2 {\n");
+      out.write("                font-weight: 400;\n");
+      out.write("                font-size: 28px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            h1, h2 {\n");
+      out.write("                font-family: \"Yanone Kaffeesatz\";\n");
+      out.write("                text-rendering: optimizeLegibility;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #body > p {\n");
+      out.write("                line-height: 1.5em;\n");
+      out.write("                width: 640px;\n");
+      out.write("                text-rendering: optimizeLegibility;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #charts {\n");
+      out.write("                padding: 10px 0;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .chart {\n");
+      out.write("                display: inline-block;\n");
+      out.write("                height: 151px;\n");
+      out.write("                margin-bottom: 20px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .reset {\n");
+      out.write("                padding-left: 1em;\n");
+      out.write("                font-size: smaller;\n");
+      out.write("                color: #ccc;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .background.bar {\n");
+      out.write("                fill: #ccc;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .foreground.bar {\n");
+      out.write("                fill: steelblue;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .axis path, .axis line {\n");
+      out.write("                fill: none;\n");
+      out.write("                stroke: #000;\n");
+      out.write("                shape-rendering: crispEdges;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .axis text {\n");
+      out.write("                font: 10px sans-serif;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .brush rect.extent {\n");
+      out.write("                fill: steelblue;\n");
+      out.write("                fill-opacity: .125;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            .brush .resize path {\n");
+      out.write("                fill: #eee;\n");
+      out.write("                stroke: #666;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #hour-chart {\n");
+      out.write("                width: 260px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #delay-chart {\n");
+      out.write("                width: 230px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #distance-chart {\n");
+      out.write("                width: 420px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #date-chart {\n");
+      out.write("                width: 920px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list {\n");
+      out.write("                min-height: 1024px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list .date,\n");
+      out.write("            #flight-list .day {\n");
+      out.write("                margin-bottom: .4em;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list .flight {\n");
+      out.write("                line-height: 1.5em;\n");
+      out.write("                background: #eee;\n");
+      out.write("                width: 640px;\n");
+      out.write("                margin-bottom: 1px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list .time {\n");
+      out.write("                color: #999;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list .flight div {\n");
+      out.write("                display: inline-block;\n");
+      out.write("                width: 100px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list div.distance,\n");
+      out.write("            #flight-list div.delay {\n");
+      out.write("                width: 160px;\n");
+      out.write("                padding-right: 10px;\n");
+      out.write("                text-align: right;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            #flight-list .early {\n");
+      out.write("                color: green;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("            aside {\n");
+      out.write("                position: absolute;\n");
+      out.write("                left: 740px;\n");
+      out.write("                font-size: smaller;\n");
+      out.write("                width: 220px;\n");
+      out.write("            }\n");
+      out.write("\n");
+      out.write("        </style>\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("    </head>\n");
+      out.write("    <body>\n");
+      out.write("\n");
+      out.write("        <!-- This section should be deleted! --->\n");
+      out.write("        <a href=\"https://github.com/square\"><img src=\"logotype.png\" width=\"122\" height=\"31\"></a>\n");
+      out.write("        <h1>Just On Time</h1>\n");
+      out.write("        <h2>US Flight Delay Analysis</h2>\n");
+      out.write("        <p><b>Crossfilter</b> is a <a href=\"https://github.com/square/crossfilter\">JavaScript library</a> for exploring large multivariate datasets in the browser. Crossfilter supports extremely fast (&lt;30ms) interaction with coordinated views, even with datasets containing a million or more records; we built it to power analytics for <a href=\"https://squareup.com/register\">Square Register</a>, allowing merchants to slice and dice their payment history fluidly.\n");
+      out.write("        <p>Since most interactions only involve a single dimension, and then only small adjustments are made to the filter values, incremental filtering and reducing is significantly faster than starting from scratch. Crossfilter uses sorted indexes (and a few bit-twiddling hacks) to make this possible, dramatically increasing the perfor&shy;mance of live histograms and top-<i>K</i> lists. For more details on how Crossfilter works, see the <a href=\"https://github.com/square/crossfilter/wiki/API-Reference\">API reference</a>.\n");
+      out.write("        <h2>Example: Airline on-time performance</h2>\n");
+      out.write("        <p>The coordinated visualizations below (built with <a href=\"http://mbostock.github.com/d3/\">D3</a>) show nearly a quarter-million flights from early 2001: part of the <a href=\"http://stat-computing.org/dataexpo/2009/\">ASA Data Expo</a> dataset. The dataset is 5.3MB, so it might take a few seconds to download. Click and drag on any chart to filter by the associated dimension. The table beneath shows the eighty most recent flights that match the current filters; these are the <i>details on demand</i>, anecdotal evidence you can use to weigh different hypotheses.\n");
+      out.write("        <p>Some questions to consider: How does time-of-day correlate with <a href=\"javascript:filter([null, [100, 150], null, null])\">arrival delay</a>? Are <a href=\"javascript:filter([null, null, [1700, 2000], null])\">longer</a> or <a href=\"javascript:filter([null, null, [0, 300], null])\">shorter</a> flights more likely to arrive early? What happened on <a href=\"javascript:filter([null, [80, 150], null, [new Date(2001, 0, 12), new Date(2001, 0, 13)]])\">January 12</a>? How do flight patterns differ between <a href=\"javascript:filter([null, null, null, [new Date(2001, 0, 27), new Date(2001, 0, 29)]])\">weekends</a> and <a href=\"javascript:filter([null, null, null, [new Date(2001, 0, 29), new Date(2001, 1, 3)]])\">weekdays</a>, or <a href=\"javascript:filter([[4, 7], null, null, null])\">mornings</a> and <a href=\"javascript:filter([[21, 24], null, null, null])\">nights</a>? <a href=\"https://github.com/square/crossfilter/tree/gh-pages\">Fork this example</a> and try your own data!\n");
+      out.write("            <!-- This section should be deleted! --->\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("        <div id=\"charts\">\n");
+      out.write("            <div id=\"hour-chart\" class=\"chart\">\n");
+      out.write("                <div class=\"title\">Time of Day</div>\n");
+      out.write("            </div>\n");
+      out.write("            <div id=\"delay-chart\" class=\"chart\">\n");
+      out.write("                <div class=\"title\">Arrival Delay (min.)</div>\n");
+      out.write("            </div>\n");
+      out.write("            <div id=\"distance-chart\" class=\"chart\">\n");
+      out.write("                <div class=\"title\">Distance (mi.)</div>\n");
+      out.write("            </div>\n");
+      out.write("            <div id=\"date-chart\" class=\"chart\">\n");
+      out.write("                <div class=\"title\">Date</div>\n");
+      out.write("            </div>\n");
+      out.write("        </div>\n");
+      out.write("\n");
+      out.write("        <aside id=\"totals\"><span id=\"active\">-</span> of <span id=\"total\">-</span> flights selected.</aside>\n");
+      out.write("\n");
+      out.write("        <div id=\"lists\">\n");
+      out.write("            <div id=\"flight-list\" class=\"list\"></div>\n");
+      out.write("        </div>\n");
+      out.write("\n");
+      out.write("        <footer>\n");
+      out.write("            <span style=\"float:right;\">\n");
+      out.write("                Released under the <a href=\"http://www.apache.org/licenses/LICENSE-2.0.html\">Apache License 2.0</a>.\n");
+      out.write("            </span>\n");
+      out.write("            Copyright 2012 <a href=\"http://squareup.com\">Square, Inc.</a>\n");
+      out.write("        </footer>\n");
+      out.write("\n");
+      out.write("    </div>\n");
+      out.write("\n");
+      out.write("    <a href=\"https://github.com/square/crossfilter\"><img style=\"position: absolute; top: 0; right: 0; border: 0;\" src=\"https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png\" alt=\"Fork me on GitHub\"></a>\n");
+      out.write("\n");
+      out.write("    <script src=\"crossfilter.v1.min.js\"></script>\n");
+      out.write("    <script src=\"d3.v3.min.js\"></script>\n");
+      out.write("    <script src=\"functions.js\"></script>\n");
+      out.write("\n");
+      out.write("\n");
+      out.write("</body>\n");
+      out.write("</html>\n");
+    } catch (Throwable t) {
+      if (!(t instanceof SkipPageException)){
+        out = _jspx_out;
+        if (out != null && out.getBufferSize() != 0)
+          out.clearBuffer();
+        if (_jspx_page_context != null) _jspx_page_context.handlePageException(t);
+        else throw new ServletException(t);
+      }
+    } finally {
+      _jspxFactory.releasePageContext(_jspx_page_context);
+    }
+  }
+}
