@@ -7,16 +7,16 @@
 
         <!-- ALWAYS REMEMBER TO IMPORT FIRST, THEN OVERWRITE CSS -->
 
+        <!-- jQuery -->
+        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+        
         <!-- BOOTSTRAP: Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
         <!-- BOOTSTRAP: Optional theme -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
         <!-- BOOTSTRAP: Latest compiled and minified JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-
-        <!-- jQuery -->
-        <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-        <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
         <!-- All-Time-Favourite: Leaflet.js -->
         <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
@@ -33,7 +33,7 @@
                 min-height: 2000px;
             }
 
-            #map { height: 400px; }
+            #map { height: 500px; }
 
             #body {
                 position: relative;
@@ -326,10 +326,8 @@
     <script src="functions.js"></script>
 
     <script>
-        cf();
-        init_upload();
-        init_map();
-        calendar();
+        // placeholder
+        main();
     </script>
 
 

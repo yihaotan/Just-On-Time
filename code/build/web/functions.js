@@ -1,10 +1,32 @@
-function init_map() {
+function main() {
+    init_upload();
+    calendar();
+    cf();
 
-    var map = L.map('map').setView([40, 260], 4);
+}
 
-    var mainlayer = L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
+function init_map(geojsonFeature) {
+
+    var map = L.map('map').setView([40, 286], 4);
+
+    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18
+    }).addTo(map);
+
+    var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+
+    L.geoJson(geojsonFeature, {
+        pointToLayer: function(feature, latlng) {
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+        }
     }).addTo(map);
 
 }
@@ -24,9 +46,7 @@ function init_upload() {
         reader.onload = function() {
             alert("The reading operation is successfully completed.");
             var geoJSON = csvJSON(reader.result);
-            alert(JSON.stringify(geoJSON));
-            init_function(geoJSON);
-
+            init_map(geoJSON);
         };
     }
 
@@ -536,13 +556,13 @@ function calendar() {
 
 // This method converts a csv (as Text String) into a well-formed JSON object
 function csvJSON(csv) {
-    
+
     var lines = csv.split("\n");
     var result = [];
 
     // var headers = lines[0].split(",");
     // The headers are modified to conform to naming convention for JSON
-    var headers = ["ID", "LABEL", "LAT","LON"];
+    var headers = ["ID", "LABEL", "N", "W", "E"];
 
     for (var i = 1; i < lines.length; i++) {
 
@@ -553,27 +573,26 @@ function csvJSON(csv) {
             properties[headers[j]] = currentline[j];
         }
 
-        var lat_str = properties["LAT"];
-        var lon_str = properties["LON"];
-        var lat = parseFloat(lat_str.replace("/r", ""));
-        var lon = parseFloat(lon_str.replace("/r", ""));
+        var north_str = properties["N"];
+        var west_str = properties["W"];
+        var east_str = properties["E"];
+
+        var north = parseFloat(north_str);
+        var west = parseFloat(west_str);
+        var east = parseFloat(east_str);
 
         var record = {
             "type": "Feature",
             "properties": properties,
             "geometry": {
                 "type": "Point",
-                "coordinates": [lat, lon]
+                "coordinates": [east, north]
             }
         };
 
         result.push(record);
-        alert(JSON.stringify(record));
-
     }
 
-
-    // alert(JSON.stringify(result));
-    return result; //JavaScript object
+    return result;
 
 }
