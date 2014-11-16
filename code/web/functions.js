@@ -1,21 +1,27 @@
 function main() {
     init_upload();
-    calendar();
-    cf();
+    //calendar();
+    //cf();
 
 }
 
 function init_map(geojsonFeature) {
 
-    var map = L.map('map').setView([40, 286], 4);
-
+    alert(JSON.stringify(geojsonFeature));
+    var map = L.map('map').setView([40, 260], 4);
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18
     }).addTo(map);
+    function onEachFeature(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.out_num) {
+            layer.bindPopup(feature.properties.LABEL);
+        }
+    }
 
     var geojsonMarkerOptions = {
-        radius: 8,
+        radius: 10,
         fillColor: "#ff7800",
         color: "#000",
         weight: 1,
@@ -24,11 +30,28 @@ function init_map(geojsonFeature) {
     };
 
     L.geoJson(geojsonFeature, {
+        onEachFeature: onEachFeature,
         pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, geojsonMarkerOptions);
+        },
+        style: function(feature) {
+            var num = parseFloat(feature.properties.out_num);
+            
+            if (num > 3000) {
+                return {fillColor: "#FF0000"};
+            } else if (num > 2000) {
+                return {fillColor: "#F88017"};
+            } else if (num > 1000) {
+                return {fillColor: "#FFFF00"};
+            } else if (num > 500) {
+                return {fillColor: "#CCFB5D"};
+            }
+            return {fillColor: "#00FF00"};
+            
+            
         }
     }).addTo(map);
-
+    
 }
 
 function init_upload() {
@@ -44,7 +67,7 @@ function init_upload() {
         reader.readAsText(first_file);
         // Upon loading data successfully, convert it to JSON object
         reader.onload = function() {
-            alert("The reading operation is successfully completed.");
+            // alert("The reading operation is successfully completed.");
             var geoJSON = csvJSON(reader.result);
             init_map(geoJSON);
         };
@@ -57,18 +80,16 @@ function cf() {
 // (It's CSV, but GitHub Pages only gzip's JSON at the moment.)
     d3.csv("flights-3m.json", function(error, flights) {
 
-        // Various formatters.
+// Various formatters.
         var formatNumber = d3.format(",d"),
                 formatChange = d3.format("+,d"),
                 formatDate = d3.time.format("%B %d, %Y"),
                 formatTime = d3.time.format("%I:%M %p");
-
         // A nest operator, for grouping the flight list.
         var nestByDate = d3.nest()
                 .key(function(d) {
             return d3.time.day(d.date);
         });
-
         // A little coercion, since the CSV is untyped.
         flights.forEach(function(d, i) {
             d.index = i;
@@ -76,7 +97,6 @@ function cf() {
             d.delay = +d.delay;
             d.distance = +d.distance;
         });
-
         // Create the crossfilter for the relevant dimensions and groups.
         var flight = crossfilter(flights),
                 all = flight.groupAll(),
@@ -100,7 +120,6 @@ function cf() {
                 distances = distance.group(function(d) {
             return Math.floor(d / 50) * 50;
         });
-
         var charts = [
             barChart()
                     .dimension(hour)
@@ -130,7 +149,6 @@ function cf() {
                     .filter([new Date(2001, 1, 1), new Date(2001, 2, 1)])
 
         ];
-
         // Given our array of charts, which we assume are in the same order as the
         // .chart elements in the DOM, bind the charts to the DOM and render them.
         // We also listen to the chart's brush events to update the display.
@@ -139,17 +157,13 @@ function cf() {
                 .each(function(chart) {
             chart.on("brush", renderAll).on("brushend", renderAll);
         });
-
         // Render the initial lists.
         var list = d3.selectAll(".list")
                 .data([flightList]);
-
         // Render the total.
         d3.selectAll("#total")
                 .text(formatNumber(flight.size()));
-
         renderAll();
-
         // Renders the specified chart or list.
         function render(method) {
             d3.select(this).call(method);
@@ -177,21 +191,17 @@ function cf() {
             });
             renderAll();
         };
-
         window.reset = function(i) {
             charts[i].filter(null);
             renderAll();
         };
-
         function flightList(div) {
             var flightsByDate = nestByDate.entries(date.top(40));
-
             div.each(function() {
                 var date = d3.select(this).selectAll(".date")
                         .data(flightsByDate, function(d) {
                     return d.key;
                 });
-
                 date.enter().append("div")
                         .attr("class", "date")
                         .append("div")
@@ -199,43 +209,35 @@ function cf() {
                         .text(function(d) {
                     return formatDate(d.values[0].date);
                 });
-
                 date.exit().remove();
-
                 var flight = date.order().selectAll(".flight")
                         .data(function(d) {
                     return d.values;
                 }, function(d) {
                     return d.index;
                 });
-
                 var flightEnter = flight.enter().append("div")
                         .attr("class", "flight");
-
                 flightEnter.append("div")
                         .attr("class", "time")
                         .text(function(d) {
                     return formatTime(d.date);
                 });
-
                 flightEnter.append("div")
                         .attr("class", "origin")
                         .text(function(d) {
                     return d.origin;
                 });
-
                 flightEnter.append("div")
                         .attr("class", "destination")
                         .text(function(d) {
                     return d.destination;
                 });
-
                 flightEnter.append("div")
                         .attr("class", "distance")
                         .text(function(d) {
                     return formatNumber(d.distance) + " mi.";
                 });
-
                 flightEnter.append("div")
                         .attr("class", "delay")
                         .classed("early", function(d) {
@@ -244,9 +246,7 @@ function cf() {
                         .text(function(d) {
                     return formatChange(d.delay) + " min.";
                 });
-
                 flight.exit().remove();
-
                 flight.order();
             });
         }
@@ -254,7 +254,6 @@ function cf() {
         function barChart() {
             if (!barChart.id)
                 barChart.id = 0;
-
             var margin = {top: 10, right: 10, bottom: 20, left: 10},
             x,
                     y = d3.scale.linear().range([100, 0]),
@@ -265,17 +264,13 @@ function cf() {
                     dimension,
                     group,
                     round;
-
             function chart(div) {
                 var width = x.range()[1],
                         height = y.range()[0];
-
                 y.domain([0, group.top(1)[0].value]);
-
                 div.each(function() {
                     var div = d3.select(this),
                             g = div.select("g");
-
                     // Create the skeletal chart.
                     if (g.empty()) {
                         div.select(".title").append("a")
@@ -283,19 +278,16 @@ function cf() {
                                 .attr("class", "reset")
                                 .text("reset")
                                 .style("display", "none");
-
                         g = div.append("svg")
                                 .attr("width", width + margin.left + margin.right)
                                 .attr("height", height + margin.top + margin.bottom)
                                 .append("g")
                                 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
                         g.append("clipPath")
                                 .attr("id", "clip-" + id)
                                 .append("rect")
                                 .attr("width", width)
                                 .attr("height", height);
-
                         g.selectAll(".bar")
                                 .data(["background", "foreground"])
                                 .enter().append("path")
@@ -303,15 +295,12 @@ function cf() {
                             return d + " bar";
                         })
                                 .datum(group.all());
-
                         g.selectAll(".foreground.bar")
                                 .attr("clip-path", "url(#clip-" + id + ")");
-
                         g.append("g")
                                 .attr("class", "axis")
                                 .attr("transform", "translate(0," + height + ")")
                                 .call(axis);
-
                         // Initialize the brush component with pretty resize handles.
                         var gBrush = g.append("g").attr("class", "brush").call(brush);
                         gBrush.selectAll("rect").attr("height", height);
@@ -337,7 +326,6 @@ function cf() {
 
                     g.selectAll(".bar").attr("d", barPath);
                 });
-
                 function barPath(groups) {
                     var path = [],
                             i = -1,
@@ -370,7 +358,6 @@ function cf() {
                 var div = d3.select(this.parentNode.parentNode.parentNode);
                 div.select(".title a").style("display", null);
             });
-
             brush.on("brush.chart", function() {
                 var g = d3.select(this.parentNode),
                         extent = brush.extent();
@@ -384,7 +371,6 @@ function cf() {
                         .attr("width", x(extent[1]) - x(extent[0]));
                 dimension.filterRange(extent);
             });
-
             brush.on("brushend.chart", function() {
                 if (brush.empty()) {
                     var div = d3.select(this.parentNode.parentNode.parentNode);
@@ -393,14 +379,12 @@ function cf() {
                     dimension.filterAll();
                 }
             });
-
             chart.margin = function(_) {
                 if (!arguments.length)
                     return margin;
                 margin = _;
                 return chart;
             };
-
             chart.x = function(_) {
                 if (!arguments.length)
                     return x;
@@ -409,21 +393,18 @@ function cf() {
                 brush.x(x);
                 return chart;
             };
-
             chart.y = function(_) {
                 if (!arguments.length)
                     return y;
                 y = _;
                 return chart;
             };
-
             chart.dimension = function(_) {
                 if (!arguments.length)
                     return dimension;
                 dimension = _;
                 return chart;
             };
-
             chart.filter = function(_) {
                 if (_) {
                     brush.extent(_);
@@ -435,21 +416,18 @@ function cf() {
                 brushDirty = true;
                 return chart;
             };
-
             chart.group = function(_) {
                 if (!arguments.length)
                     return group;
                 group = _;
                 return chart;
             };
-
             chart.round = function(_) {
                 if (!arguments.length)
                     return round;
                 round = _;
                 return chart;
             };
-
             return d3.rebind(chart, brush, "on");
         }
     });
@@ -465,13 +443,11 @@ function calendar() {
             week = d3.time.format("%U"),
             percent = d3.format(".1%"),
             format = d3.time.format("%Y-%m-%d");
-
     var color = d3.scale.quantize()
             .domain([-.05, .05])
             .range(d3.range(11).map(function(d) {
         return "q" + d + "-11";
     }));
-
     var svg = d3.select("#calendar").selectAll("svg")
             .data(d3.range(1990, 2011))
             .enter().append("svg")
@@ -480,14 +456,12 @@ function calendar() {
             .attr("class", "RdYlGn")
             .append("g")
             .attr("transform", "translate(" + ((width - cellSize * 53) / 2) + "," + (height - cellSize * 7 - 1) + ")");
-
     svg.append("text")
             .attr("transform", "translate(-6," + cellSize * 3.5 + ")rotate(-90)")
             .style("text-anchor", "middle")
             .text(function(d) {
         return d;
     });
-
     var rect = svg.selectAll(".day")
             .data(function(d) {
         return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1));
@@ -503,12 +477,10 @@ function calendar() {
         return day(d) * cellSize;
     })
             .datum(format);
-
     rect.append("title")
             .text(function(d) {
         return d;
     });
-
     svg.selectAll(".month")
             .data(function(d) {
         return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1));
@@ -516,7 +488,6 @@ function calendar() {
             .enter().append("path")
             .attr("class", "month")
             .attr("d", monthPath);
-
     d3.csv("dji.csv", function(error, csv) {
         var data = d3.nest()
                 .key(function(d) {
@@ -526,7 +497,6 @@ function calendar() {
             return (d[0].Close - d[0].Open) / d[0].Open;
         })
                 .map(csv);
-
         rect.filter(function(d) {
             return d in data;
         })
@@ -538,7 +508,6 @@ function calendar() {
             return d + ": " + percent(data[d]);
         });
     });
-
     function monthPath(t0) {
         var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
                 d0 = +day(t0), w0 = +week(t0),
@@ -551,7 +520,6 @@ function calendar() {
     }
 
     d3.select(self.frameElement).style("height", "2910px");
-
 }
 
 // This method converts a csv (as Text String) into a well-formed JSON object
@@ -559,15 +527,12 @@ function csvJSON(csv) {
 
     var lines = csv.split("\n");
     var result = [];
-
     // var headers = lines[0].split(",");
     // The headers are modified to conform to naming convention for JSON
-    var headers = ["ID", "LABEL", "N", "W", "E"];
-
+    var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
     for (var i = 1; i < lines.length; i++) {
 
         var properties = {};
-
         var currentline = lines[i].split(",");
         for (var j = 0; j < headers.length; j++) {
             properties[headers[j]] = currentline[j];
@@ -576,11 +541,21 @@ function csvJSON(csv) {
         var north_str = properties["N"];
         var west_str = properties["W"];
         var east_str = properties["E"];
+//        var out_num = parseFloat(properties["Delay_No_Outgoing"]);
+//        properties.Delay_No_Outgoing = out_num;
+//
+//        var out_min = parseFloat(properties["Delay_Min_Outgoing"]);
+//        properties.Delay_Min_Outgoing = out_min;
+//
+//        var in_num = parseFloat(properties["Delay_No_Incoming"]);
+//        properties.Delay_No_Incoming = in_num;
+//
+//        var in_min = parseFloat(properties["Delay_Min_Incoming"]);
+//        properties.Delay_Min_Incoming = in_min;
 
         var north = parseFloat(north_str);
         var west = parseFloat(west_str);
         var east = parseFloat(east_str);
-
         var record = {
             "type": "Feature",
             "properties": properties,
@@ -589,10 +564,8 @@ function csvJSON(csv) {
                 "coordinates": [east, north]
             }
         };
-
         result.push(record);
     }
 
     return result;
-
 }
