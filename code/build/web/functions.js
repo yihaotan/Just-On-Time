@@ -5,9 +5,31 @@ function main() {
 
 }
 
+function init_upload() {
+
+    var inputElement = document.getElementById("input");
+    inputElement.addEventListener("change", handleFiles, false);
+    function handleFiles() {
+        var fileList = this.files; /* now you can work with the file list */
+        var first_file = fileList[0];
+        // Create a new FileReader object
+        var reader = new FileReader();
+        // Read the file as Text String (not raw binary string)
+        reader.readAsText(first_file);
+        // Upon loading data successfully, convert it to JSON object
+        reader.onload = function() {
+            // alert("The reading operation is successfully completed.");
+            var edges = edge(reader.result);
+            // var geoJSON = node(reader.result);
+            init_edges(edges);
+        };
+    }
+
+}
+
 function init_map(geojsonFeature) {
 
-    alert(JSON.stringify(geojsonFeature));
+    // alert(JSON.stringify(geojsonFeature));
     var map = L.map('map').setView([40, 260], 4);
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -36,7 +58,7 @@ function init_map(geojsonFeature) {
         },
         style: function(feature) {
             var num = parseFloat(feature.properties.out_num);
-            
+
             if (num > 3000) {
                 return {fillColor: "#FF0000"};
             } else if (num > 2000) {
@@ -47,33 +69,70 @@ function init_map(geojsonFeature) {
                 return {fillColor: "#CCFB5D"};
             }
             return {fillColor: "#00FF00"};
-            
-            
+
+
         }
     }).addTo(map);
-    
-}
-
-function init_upload() {
-
-    var inputElement = document.getElementById("input");
-    inputElement.addEventListener("change", handleFiles, false);
-    function handleFiles() {
-        var fileList = this.files; /* now you can work with the file list */
-        var first_file = fileList[0];
-        // Create a new FileReader object
-        var reader = new FileReader();
-        // Read the file as Text String (not raw binary string)
-        reader.readAsText(first_file);
-        // Upon loading data successfully, convert it to JSON object
-        reader.onload = function() {
-            // alert("The reading operation is successfully completed.");
-            var geoJSON = csvJSON(reader.result);
-            init_map(geoJSON);
-        };
-    }
 
 }
+
+function init_edges(geojsonFeature) {
+
+    var map = L.map('map').setView([40, 260], 4);
+    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18
+    }).addTo(map);
+
+    var myStyle = {
+        "color": "#ff7800",
+        "weight": 0.1,
+        "opacity": 0.65
+    };
+
+    L.geoJson(geojsonFeature, {
+        style: function(feature) {
+            var num = parseFloat(feature.properties.COUNT);
+            alert(num);
+            if (num > 200) {
+                return {
+                    "color": "#FF0000",
+                    "weight": 2,
+                    "opacity": 0.65
+                };
+            } else if (num > 150) {
+                return {
+                    "color": "#F88017",
+                    "weight": 1,
+                    "opacity": 0.65
+                };
+            } else if (num > 100) {
+                return {
+                    "color": "#FFFF00",
+                    "weight": 0.5,
+                    "opacity": 0.65
+                };
+            } else if (num > 50) {
+                return {
+                    "color": "#CCFB5D",
+                    "weight": 0.2,
+                    "opacity": 0.65
+                };
+            }
+            
+            return {
+                "color": "#00FF00",
+                "weight": 0.05,
+                "opacity": 0.65
+            };
+
+
+        }
+
+    }).addTo(map);
+
+}
+
 
 function cf() {
 
@@ -523,7 +582,7 @@ function calendar() {
 }
 
 // This method converts a csv (as Text String) into a well-formed JSON object
-function csvJSON(csv) {
+function node(csv) {
 
     var lines = csv.split("\n");
     var result = [];
@@ -541,22 +600,12 @@ function csvJSON(csv) {
         var north_str = properties["N"];
         var west_str = properties["W"];
         var east_str = properties["E"];
-//        var out_num = parseFloat(properties["Delay_No_Outgoing"]);
-//        properties.Delay_No_Outgoing = out_num;
-//
-//        var out_min = parseFloat(properties["Delay_Min_Outgoing"]);
-//        properties.Delay_Min_Outgoing = out_min;
-//
-//        var in_num = parseFloat(properties["Delay_No_Incoming"]);
-//        properties.Delay_No_Incoming = in_num;
-//
-//        var in_min = parseFloat(properties["Delay_Min_Incoming"]);
-//        properties.Delay_Min_Incoming = in_min;
 
         var north = parseFloat(north_str);
         var west = parseFloat(west_str);
         var east = parseFloat(east_str);
-        var record = {
+
+        var node = {
             "type": "Feature",
             "properties": properties,
             "geometry": {
@@ -564,8 +613,47 @@ function csvJSON(csv) {
                 "coordinates": [east, north]
             }
         };
-        result.push(record);
+        result.push(node);
     }
 
     return result;
+}
+
+function edge(csv) {
+
+    var lines = csv.split("\n");
+    var result = [];
+    var headers = ["ORIGIN_ID", "DESTINATION_ID", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
+
+    for (var i = 1; i < lines.length; i++) {
+
+        var properties = {};
+        var currentline = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+            properties[headers[j]] = currentline[j];
+        }
+
+        var origin_n = parseFloat(properties["ORIGIN_N"]);
+        var origin_e = parseFloat(properties["ORIGIN_E"]);
+
+        var destination_n = parseFloat(properties["DESTINATION_N"]);
+        var destination_e = parseFloat(properties["DESTINATION_E"]);
+
+        var start = [origin_e, origin_n];
+        var end = [destination_e, destination_n];
+
+        var edge = {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [start, end]
+            }
+        };
+        result.push(edge);
+    }
+
+    alert(JSON.stringify(result));
+    return result;
+
 }
