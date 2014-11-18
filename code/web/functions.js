@@ -20,14 +20,14 @@ function init_upload() {
         reader.onload = function() {
             // alert("The reading operation is successfully completed.");
             var edges = edge(reader.result);
-            // var geoJSON = node(reader.result);
+            // var nodes = node(reader.result);
             init_edges(edges);
         };
     }
 
 }
 
-function init_map(geojsonFeature) {
+function init_nodes(geojsonFeature) {
 
     // alert(JSON.stringify(geojsonFeature));
     var map = L.map('map').setView([40, 260], 4);
@@ -43,7 +43,7 @@ function init_map(geojsonFeature) {
     }
 
     var geojsonMarkerOptions = {
-        radius: 10,
+        radius: 8,
         fillColor: "#ff7800",
         color: "#000",
         weight: 1,
@@ -73,6 +73,8 @@ function init_map(geojsonFeature) {
 
         }
     }).addTo(map);
+    
+    
 
 }
 
@@ -89,8 +91,19 @@ function init_edges(geojsonFeature) {
         "weight": 0.1,
         "opacity": 0.65
     };
+    
+    function onEachFeature(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.COUNT) {
+            var count = feature.properties.COUNT;
+            var origin = feature.properties.ORIGIN_ID;
+            var destination = feature.properties.DESTINATION_ID;
+            layer.bindPopup("There are " + count + " delayed flights from " + origin + " to " + destination);
+        }
+    }
 
     L.geoJson(geojsonFeature, {
+        onEachFeature: onEachFeature,
         style: function(feature) {
             var num = parseFloat(feature.properties.COUNT);
             alert(num);
@@ -122,7 +135,7 @@ function init_edges(geojsonFeature) {
             
             return {
                 "color": "#00FF00",
-                "weight": 0.05,
+                "weight": 0.1,
                 "opacity": 0.65
             };
 
