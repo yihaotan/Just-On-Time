@@ -142,7 +142,8 @@ function bankai(){
             .on("click", function (d) {
                 function setAttr(selection, keyName) {
                     selection.style("text", function (d) {
-                        if (d[keyName] === "CarrierDelay") return "";
+                        if (d[keyName] === "CarrierDelay") 
+                            chart.showStack("CarrierDelay")
                         else if (d[keyName] === "WeatherDelay") return "";
                         else if (d[keyName] === "NasDelay") return "";
                         else if (d[keyName] === "SecurityDelay") return "";
@@ -152,6 +153,7 @@ function bankai(){
                 setAttr(chart.selectAll("g.stack").selectAll("rect.bar"), "layer");
                 setAttr(chart.selectAll("g.dc-legend-item").selectAll("rect"), "name")
             });
+            //dc.renderAll("iDelay");
         };
         
         //For individual airline delays
@@ -245,8 +247,6 @@ function bankai(){
                 .xAxis().tickFormat(d3.time.format("%b %d"))
                 .ticks(d3.time.day, 4);
                
-                
-                
         totalDelayChart.width(460)
             .height(150)
             .margins({top: 10, right: 15, bottom: 20, left: 50})
@@ -300,8 +300,25 @@ function bankai(){
             .renderlet(colorRenderlet)
             .renderTitle(true)
                 .title(function (d){
-                    return  getDayofWeek(d.data.key)+" "+ formatDate2(d.data.key);
+                    
+                    return  getDayofWeek(d.data.key)+" "+ formatDate2(d.data.key)+"\n"+d.data.value.CarrierDelay
+                
              })
+               .title(function (d){
+                    
+                    return  "CarrierDelay: "+d.data.value.CarrierDelay +
+                    "\n" + "WeatherDelay: "+d.data.value.WeatherDelay +
+                    "\n" + "NasDelay: "+d.data.value.NasDelay +
+                    "\n" + "SecurityDelay: "+d.data.value.SecurityDelay +
+                    "\n" + "LateAircraftDelay: "+d.data.value.LateAircraftDelay 
+
+                     
+                    
+                    
+            
+                
+             })
+             
             .legend(dc.legend().x(350).y(0).itemHeight(13).gap(5))
             .xAxis().tickFormat(d3.time.format("%b %d"))
             .ticks(d3.time.day, 4);
@@ -322,6 +339,9 @@ function bankai(){
             .elasticX(true)
             .x(d3.scale.linear().domain([0, 1600]))
             .xAxis();
+        
+  
+        
         
         //For day of week
         dayOfWeekChart.width(300)
@@ -351,7 +371,7 @@ function bankai(){
             .centerBar(true)
             .gap(1)
             .x(d3.scale.ordinal().domain(["", "AA", "AS", "B6","DL","EV","UA","US","OO","VX","WN","F9","FL","HA","MQ"]))
-            // .x(d3.scale.ordinal().domain(data.map(function (d) {return d.carrier; })))
+            //.x(d3.scale.ordinal().domain(data.map(function (d) {return d.carrier; })))
             .xUnits(dc.units.ordinal) 
             .elasticY(true)
             .xAxis().tickFormat();
@@ -390,7 +410,7 @@ function bankai(){
         
         //Render the shit
         dc.renderAll();
-       
+        
         
     });
 
