@@ -670,3 +670,40 @@ function edge(csv) {
     return result;
 
 }
+
+function node(csv) {
+
+    var lines = csv.split("\n");
+    var result = [];
+    // var headers = lines[0].split(",");
+    // The headers are modified to conform to naming convention for JSON
+    var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
+    for (var i = 1; i < lines.length; i++) {
+
+        var properties = {};
+        var currentline = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+            properties[headers[j]] = currentline[j];
+        }
+
+        var north_str = properties["N"];
+        var west_str = properties["W"];
+        var east_str = properties["E"];
+
+        var north = parseFloat(north_str);
+        var west = parseFloat(west_str);
+        var east = parseFloat(east_str);
+
+        var node = {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [east, north]
+            }
+        };
+        result.push(node);
+    }
+
+    return result;
+}
