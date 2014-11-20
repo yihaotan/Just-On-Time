@@ -274,7 +274,7 @@
             </div><!-- /.container-fluid -->
         </nav>
         
-        <input type="file" id="input" class="button">
+        <input type="file" id="input" class="button" multiple>
 
         <!-- map -->
         <div id="map"></div>

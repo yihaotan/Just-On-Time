@@ -1,64 +1,65 @@
 function main() {
     init_upload();
-    //calendar();
-    //cf();
 
 }
 
 function init_upload() {
-
     var inputElement = document.getElementById("input");
     inputElement.addEventListener("change", handleFiles, false);
     function handleFiles() {
         var fileList = this.files; /* now you can work with the file list */
+        var edge_file;
+        var node_file;
         var first_file = fileList[0];
-        // Create a new FileReader object
-        var reader = new FileReader();
-        // Read the file as Text String (not raw binary string)
-        reader.readAsText(first_file);
-        // Upon loading data successfully, convert it to JSON object
-        reader.onload = function() {
-            // alert("The reading operation is successfully completed.");
-            var edges = edge(reader.result);
-            // var nodes = node(reader.result);
-            init_edges(edges);
+        var second_file = fileList[1];
+        if (first_file.name === 'EDGE.csv') {
+            edge_file = first_file;
+            node_file = second_file;
+        } else {
+            edge_file = second_file;
+            node_file = first_file;
+        }
+        var edge_reader = new FileReader();
+        edge_reader.readAsText(edge_file);
+        edge_reader.onload = function() {
+            var edges = edge(edge_reader.result);
+            var node_reader = new FileReader();
+            node_reader.readAsText(node_file);
+            node_reader.onload = function() {
+                var nodes = node(node_reader.result);
+                init_map(nodes, edges);
+            };
         };
     }
-
 }
 
-function init_nodes(geojsonFeature) {
-
-    // alert(JSON.stringify(geojsonFeature));
+function init_map(nodes, edges) {
     var map = L.map('map').setView([40, 260], 4);
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18
     }).addTo(map);
-    function onEachFeature(feature, layer) {
-        // does this feature have a property named popupContent?
+    // ===================================================================================================
+    function onEachNode(feature, layer) {
         if (feature.properties && feature.properties.out_num) {
             layer.bindPopup(feature.properties.LABEL);
         }
     }
-
     var geojsonMarkerOptions = {
-        radius: 8,
+        radius: 6,
         fillColor: "#ff7800",
         color: "#000",
         weight: 1,
         opacity: 1,
         fillOpacity: 0.8
     };
-
-    L.geoJson(geojsonFeature, {
-        onEachFeature: onEachFeature,
+    L.geoJson(nodes, {
+        onEachFeature: onEachNode,
         pointToLayer: function(feature, latlng) {
             return L.circleMarker(latlng, geojsonMarkerOptions);
         },
         style: function(feature) {
             var num = parseFloat(feature.properties.out_num);
-
             if (num > 3000) {
                 return {fillColor: "#FF0000"};
             } else if (num > 2000) {
@@ -69,31 +70,10 @@ function init_nodes(geojsonFeature) {
                 return {fillColor: "#CCFB5D"};
             }
             return {fillColor: "#00FF00"};
-
-
         }
     }).addTo(map);
-    
-    
-
-}
-
-function init_edges(geojsonFeature) {
-
-    var map = L.map('map').setView([40, 260], 4);
-    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        maxZoom: 18
-    }).addTo(map);
-
-    var myStyle = {
-        "color": "#ff7800",
-        "weight": 0.1,
-        "opacity": 0.65
-    };
-    
-    function onEachFeature(feature, layer) {
-        // does this feature have a property named popupContent?
+    // ===================================================================================================
+    function onEachEdge(feature, layer) {
         if (feature.properties && feature.properties.COUNT) {
             var count = feature.properties.COUNT;
             var origin = feature.properties.ORIGIN_ID;
@@ -101,9 +81,8 @@ function init_edges(geojsonFeature) {
             layer.bindPopup("There are " + count + " delayed flights from " + origin + " to " + destination);
         }
     }
-
-    L.geoJson(geojsonFeature, {
-        onEachFeature: onEachFeature,
+    L.geoJson(edges, {
+        onEachFeature: onEachEdge,
         style: function(feature) {
             var num = parseFloat(feature.properties.COUNT);
             alert(num);
@@ -132,20 +111,109 @@ function init_edges(geojsonFeature) {
                     "opacity": 0.65
                 };
             }
-            
             return {
                 "color": "#00FF00",
                 "weight": 0.1,
                 "opacity": 0.65
             };
-
-
         }
-
     }).addTo(map);
-
 }
 
+function init_nodes(geojsonFeature) {
+    var map = L.map('map').setView([40, 260], 4);
+    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18
+    }).addTo(map);
+    function onEachNode(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.out_num) {
+            layer.bindPopup(feature.properties.LABEL);
+        }
+    }
+    var geojsonMarkerOptions = {
+        radius: 8,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 1,
+        opacity: 1,
+        fillOpacity: 0.8
+    };
+    L.geoJson(geojsonFeature, {
+        onEachFeature: onEachNode,
+        pointToLayer: function(feature, latlng) {
+            return L.circleMarker(latlng, geojsonMarkerOptions);
+        },
+        style: function(feature) {
+            var num = parseFloat(feature.properties.out_num);
+            if (num > 3000) {
+                return {fillColor: "#FF0000"};
+            } else if (num > 2000) {
+                return {fillColor: "#F88017"};
+            } else if (num > 1000) {
+                return {fillColor: "#FFFF00"};
+            } else if (num > 500) {
+                return {fillColor: "#CCFB5D"};
+            }
+            return {fillColor: "#00FF00"};
+        }
+    }).addTo(map);
+}
+
+function init_edges(geojsonFeature) {
+    var map = L.map('map').setView([40, 260], 4);
+    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
+        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+        maxZoom: 18
+    }).addTo(map);
+    function onEachEdge(feature, layer) {
+        // does this feature have a property named popupContent?
+        if (feature.properties && feature.properties.COUNT) {
+            var count = feature.properties.COUNT;
+            var origin = feature.properties.ORIGIN_ID;
+            var destination = feature.properties.DESTINATION_ID;
+            layer.bindPopup("There are " + count + " delayed flights from " + origin + " to " + destination);
+        }
+    }
+    L.geoJson(geojsonFeature, {
+        onEachFeature: onEachEdge,
+        style: function(feature) {
+            var num = parseFloat(feature.properties.COUNT);
+            alert(num);
+            if (num > 200) {
+                return {
+                    "color": "#FF0000",
+                    "weight": 2,
+                    "opacity": 0.65
+                };
+            } else if (num > 150) {
+                return {
+                    "color": "#F88017",
+                    "weight": 1,
+                    "opacity": 0.65
+                };
+            } else if (num > 100) {
+                return {
+                    "color": "#FFFF00",
+                    "weight": 0.5,
+                    "opacity": 0.65
+                };
+            } else if (num > 50) {
+                return {
+                    "color": "#CCFB5D",
+                    "weight": 0.2,
+                    "opacity": 0.65
+                };
+            }
+            return {
+                "color": "#00FF00",
+                "weight": 0.1,
+                "opacity": 0.65
+            };
+        }
+    }).addTo(map);
+}
 
 function cf() {
 
@@ -596,28 +664,21 @@ function calendar() {
 
 // This method converts a csv (as Text String) into a well-formed JSON object
 function node(csv) {
-
     var lines = csv.split("\n");
     var result = [];
-    // var headers = lines[0].split(",");
-    // The headers are modified to conform to naming convention for JSON
     var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
     for (var i = 1; i < lines.length; i++) {
-
         var properties = {};
         var currentline = lines[i].split(",");
         for (var j = 0; j < headers.length; j++) {
             properties[headers[j]] = currentline[j];
         }
-
         var north_str = properties["N"];
         var west_str = properties["W"];
         var east_str = properties["E"];
-
         var north = parseFloat(north_str);
         var west = parseFloat(west_str);
         var east = parseFloat(east_str);
-
         var node = {
             "type": "Feature",
             "properties": properties,
@@ -628,33 +689,25 @@ function node(csv) {
         };
         result.push(node);
     }
-
     return result;
 }
 
 function edge(csv) {
-
     var lines = csv.split("\n");
     var result = [];
     var headers = ["ORIGIN_ID", "DESTINATION_ID", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
-
     for (var i = 1; i < lines.length; i++) {
-
         var properties = {};
         var currentline = lines[i].split(",");
         for (var j = 0; j < headers.length; j++) {
             properties[headers[j]] = currentline[j];
         }
-
         var origin_n = parseFloat(properties["ORIGIN_N"]);
         var origin_e = parseFloat(properties["ORIGIN_E"]);
-
         var destination_n = parseFloat(properties["DESTINATION_N"]);
         var destination_e = parseFloat(properties["DESTINATION_E"]);
-
         var start = [origin_e, origin_n];
         var end = [destination_e, destination_n];
-
         var edge = {
             "type": "Feature",
             "properties": properties,
@@ -665,45 +718,5 @@ function edge(csv) {
         };
         result.push(edge);
     }
-
-    alert(JSON.stringify(result));
-    return result;
-
-}
-
-function node(csv) {
-
-    var lines = csv.split("\n");
-    var result = [];
-    // var headers = lines[0].split(",");
-    // The headers are modified to conform to naming convention for JSON
-    var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
-    for (var i = 1; i < lines.length; i++) {
-
-        var properties = {};
-        var currentline = lines[i].split(",");
-        for (var j = 0; j < headers.length; j++) {
-            properties[headers[j]] = currentline[j];
-        }
-
-        var north_str = properties["N"];
-        var west_str = properties["W"];
-        var east_str = properties["E"];
-
-        var north = parseFloat(north_str);
-        var west = parseFloat(west_str);
-        var east = parseFloat(east_str);
-
-        var node = {
-            "type": "Feature",
-            "properties": properties,
-            "geometry": {
-                "type": "Point",
-                "coordinates": [east, north]
-            }
-        };
-        result.push(node);
-    }
-
     return result;
 }

@@ -317,7 +317,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write("            </div><!-- /.container-fluid -->\r\n");
       out.write("        </nav>\r\n");
       out.write("        \r\n");
-      out.write("        <input type=\"file\" id=\"input\" class=\"button\">\r\n");
+      out.write("        <input type=\"file\" id=\"input\" class=\"button\" multiple>\r\n");
       out.write("\r\n");
       out.write("        <!-- map -->\r\n");
       out.write("        <div id=\"map\"></div>\r\n");
