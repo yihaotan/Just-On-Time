@@ -1,10 +1,10 @@
-function main() {
-    init_upload();
+function main(map) {
+    init_upload(map);
     calendar();
     bankai();
 }
 
-function init_upload() {
+function init_upload(map) {
     var inputElement = document.getElementById("input");
     inputElement.addEventListener("change", handleFiles, false);
     function handleFiles() {
@@ -28,14 +28,14 @@ function init_upload() {
             node_reader.readAsText(node_file);
             node_reader.onload = function() {
                 var nodes = node(node_reader.result);
-                init_map(nodes, edges);
+                init_map(map, nodes, edges);
             };
         };
     }
 }
 
-function init_map(nodes, edges) {
-    var map = L.map('map').setView([40, 260], 4);
+function init_map(map, nodes, edges) {
+    //var map = L.map('map').setView([40, 260], 4);
     L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
         attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
         maxZoom: 18
@@ -86,102 +86,6 @@ function init_map(nodes, edges) {
         onEachFeature: onEachEdge,
         style: function(feature) {
             var num = parseFloat(feature.properties.COUNT);
-            alert(num);
-            if (num > 200) {
-                return {
-                    "color": "#FF0000",
-                    "weight": 2,
-                    "opacity": 0.65
-                };
-            } else if (num > 150) {
-                return {
-                    "color": "#F88017",
-                    "weight": 1,
-                    "opacity": 0.65
-                };
-            } else if (num > 100) {
-                return {
-                    "color": "#FFFF00",
-                    "weight": 0.5,
-                    "opacity": 0.65
-                };
-            } else if (num > 50) {
-                return {
-                    "color": "#CCFB5D",
-                    "weight": 0.2,
-                    "opacity": 0.65
-                };
-            }
-            return {
-                "color": "#00FF00",
-                "weight": 0.1,
-                "opacity": 0.65
-            };
-        }
-    }).addTo(map);
-}
-
-function init_nodes(geojsonFeature) {
-    var map = L.map('map').setView([40, 260], 4);
-    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        maxZoom: 18
-    }).addTo(map);
-    function onEachNode(feature, layer) {
-        // does this feature have a property named popupContent?
-        if (feature.properties && feature.properties.out_num) {
-            layer.bindPopup(feature.properties.LABEL);
-        }
-    }
-    var geojsonMarkerOptions = {
-        radius: 8,
-        fillColor: "#ff7800",
-        color: "#000",
-        weight: 1,
-        opacity: 1,
-        fillOpacity: 0.8
-    };
-    L.geoJson(geojsonFeature, {
-        onEachFeature: onEachNode,
-        pointToLayer: function(feature, latlng) {
-            return L.circleMarker(latlng, geojsonMarkerOptions);
-        },
-        style: function(feature) {
-            var num = parseFloat(feature.properties.out_num);
-            if (num > 3000) {
-                return {fillColor: "#FF0000"};
-            } else if (num > 2000) {
-                return {fillColor: "#F88017"};
-            } else if (num > 1000) {
-                return {fillColor: "#FFFF00"};
-            } else if (num > 500) {
-                return {fillColor: "#CCFB5D"};
-            }
-            return {fillColor: "#00FF00"};
-        }
-    }).addTo(map);
-}
-
-function init_edges(geojsonFeature) {
-    var map = L.map('map').setView([40, 260], 4);
-    L.tileLayer('http://{s}.tiles.mapbox.com/v3/realis.jo4acied/{z}/{x}/{y}.png', {
-        attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
-        maxZoom: 18
-    }).addTo(map);
-    function onEachEdge(feature, layer) {
-        // does this feature have a property named popupContent?
-        if (feature.properties && feature.properties.COUNT) {
-            var count = feature.properties.COUNT;
-            var origin = feature.properties.ORIGIN_ID;
-            var destination = feature.properties.DESTINATION_ID;
-            layer.bindPopup("There are " + count + " delayed flights from " + origin + " to " + destination);
-        }
-    }
-    L.geoJson(geojsonFeature, {
-        onEachFeature: onEachEdge,
-        style: function(feature) {
-            var num = parseFloat(feature.properties.COUNT);
-            alert(num);
             if (num > 200) {
                 return {
                     "color": "#FF0000",
@@ -310,7 +214,7 @@ function calendar() {
     load(0);
 
     function load(value) {
-        d3.csv("delay.csv", function(error, csv) {
+        d3.csv("calendar.csv", function(error, csv) {
             var data = d3.nest()
                     .key(function(d) {
                 return d.Date;
@@ -453,7 +357,7 @@ function bankai(){
     dataTable = dc.dataTable("#dc-table-graph");
     
     //load data from a csv file 
-    d3.csv("FINAL.csv",function(data){
+    d3.csv("crossfilter.csv",function(data){
     
         //format our data 
         function parseDate(d) {
@@ -738,7 +642,7 @@ function bankai(){
             .renderTitle(true)
                 .title(function (d){
                     
-                    return  getDayofWeek(d.data.key)+" "+ formatDate2(d.data.key)+"\n"+d.data.value.CarrierDelay
+                    return  getDayofWeek(d.data.key)+" "+ formatDate2(d.data.key)+"\n"+d.data.value.CarrierDelay;
                 
              })
                .title(function (d){
@@ -747,13 +651,8 @@ function bankai(){
                     "\n" + "WeatherDelay: "+d.data.value.WeatherDelay +
                     "\n" + "NasDelay: "+d.data.value.NasDelay +
                     "\n" + "SecurityDelay: "+d.data.value.SecurityDelay +
-                    "\n" + "LateAircraftDelay: "+d.data.value.LateAircraftDelay 
+                    "\n" + "LateAircraftDelay: "+d.data.value.LateAircraftDelay; 
 
-                     
-                    
-                    
-            
-                
              })
              
             .legend(dc.legend().x(350).y(0).itemHeight(13).gap(5))
@@ -776,10 +675,7 @@ function bankai(){
             .elasticX(true)
             .x(d3.scale.linear().domain([0, 1600]))
             .xAxis();
-        
-  
-        
-        
+    
         //For day of week
         dayOfWeekChart.width(300)
             .height(250)
