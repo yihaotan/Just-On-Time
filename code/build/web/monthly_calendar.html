@@ -8,7 +8,7 @@
                 font: 1.1em sans-serif;
             }
 
-            #chart{
+            #calendar{
                 width: 800px;
                 margin: 0 auto;
             }
@@ -74,7 +74,7 @@
         </div>
         
         
-        <div id="chart" class="clearfix"></div>
+        <div id="calendar" class="clearfix"></div>
         
         <script src="http://d3js.org/d3.v3.js"></script>
         <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
@@ -100,7 +100,7 @@
             var minColor = 3300;
             var maxColor = 9900;
 
-            var svg = d3.select("#chart").selectAll("svg")
+            var svg = d3.select("#calendar").selectAll("svg")
                     .data(d3.range(2014, 2015))
                     .enter().append("svg")
                     .attr("width", width)

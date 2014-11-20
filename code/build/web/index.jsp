@@ -10,7 +10,7 @@
         <!-- jQuery -->
         <script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
         <script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
-        
+
         <!-- BOOTSTRAP: Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
         <!-- BOOTSTRAP: Optional theme -->
@@ -173,6 +173,22 @@
                 width: 220px;
             }
 
+            #calendar{
+                width: 800px;
+                margin: 0 auto;
+            }
+            .background {
+                fill: #eee;
+            }
+
+            line {
+                stroke: #fff;
+            }
+
+            text.active {
+                fill: red;
+            }
+
             .day {
                 fill: #fff;
                 stroke: #ccc;
@@ -180,21 +196,34 @@
 
             .month {
                 fill: none;
-                stroke: #000;
-                stroke-width: 2px;
+                stroke: #fff;
+                stroke-width: 4px;
+            }
+            .year-title {
+                font-size: 1.5em;
             }
 
-            .RdYlGn .q0-11{fill:rgb(165,0,38)};
-            .RdYlGn .q1-11{fill:rgb(215,48,39)};
-            .RdYlGn .q2-11{fill:rgb(244,109,67)};
-            .RdYlGn .q3-11{fill:rgb(253,174,97)};
-            .RdYlGn .q4-11{fill:rgb(254,224,139)};
-            .RdYlGn .q5-11{fill:rgb(255,255,191)};
-            .RdYlGn .q6-11{fill:rgb(217,239,139)};
-            .RdYlGn .q7-11{fill:rgb(166,217,106)};
-            .RdYlGn .q8-11{fill:rgb(102,189,99)};
-            .RdYlGn .q9-11{fill:rgb(26,152,80)};
-            .RdYlGn .q10-11{fill:rgb(0,104,55)};
+            /* color ranges */
+            .RdYlGn .q0-11{fill:#ffffcc}
+            .RdYlGn .q1-11{fill:#ffeda0}
+            .RdYlGn .q2-11{fill:#fed976}
+            .RdYlGn .q3-11{fill:#feb24c}
+            .RdYlGn .q4-11{fill:#fd8d3c}
+            .RdYlGn .q5-11{fill:#fc4e2a}
+            .RdYlGn .q6-11{fill:#fc4e2a}
+            .RdYlGn .q7-11{fill:#fc4e2a}
+            .RdYlGn .q8-11{fill:#e31a1c}
+            .RdYlGn .q9-11{fill:#bd0026}
+            .RdYlGn .q10-11{fill:#800026}
+
+            /* hover info */
+            #tooltip {
+                background-color: #fff;
+                border: 2px solid #ccc;
+                padding: 10px;
+            }
+
+
 
         </style>
 
@@ -209,9 +238,9 @@
 
         <h1>Just On Time</h1>
         <h2>US Flight Delay Analysis</h2>
-        
-        
-        
+
+
+
         <!--
                 <p><b>Crossfilter</b> is a <a href="https://github.com/square/crossfilter">JavaScript library</a> for exploring large multivariate datasets in the browser. Crossfilter supports extremely fast (&lt;30ms) interaction with coordinated views, even with datasets containing a million or more records; we built it to power analytics for <a href="https://squareup.com/register">Square Register</a>, allowing merchants to slice and dice their payment history fluidly.
                 <p>Since most interactions only involve a single dimension, and then only small adjustments are made to the filter values, incremental filtering and reducing is significantly faster than starting from scratch. Crossfilter uses sorted indexes (and a few bit-twiddling hacks) to make this possible, dramatically increasing the perfor&shy;mance of live histograms and top-<i>K</i> lists. For more details on how Crossfilter works, see the <a href="https://github.com/square/crossfilter/wiki/API-Reference">API reference</a>.
@@ -274,64 +303,34 @@
             </div><!-- /.container-fluid -->
         </nav>
         
+        <!-- navbar -->
         <input type="file" id="input" class="button" multiple>
 
         <!-- map -->
         <div id="map"></div>
-        
-        <!-- map -->
-        <div id="calendar"></div>
-        
-        <div id="charts">
 
-            <div id="hour-chart" class="chart">
-                <div class="title">Time of Day</div>
-            </div>
-
-            <div id="delay-chart" class="chart">
-                <div class="title">Arrival Delay (min.)</div>
-            </div>
-
-            <div id="distance-chart" class="chart">
-                <div class="title">Distance (mi.)</div>
-            </div>
-
-            <div id="date-chart" class="chart">
-                <div class="title">Date</div>
-            </div>
-
+        <!-- calendar -->
+        <div>        
+            <select onchange ="load(this.value)" onload="chartTitle()" >
+                <option value="0" selected="selected" >Total Cancellation </option>
+                <option value="1" >Arrival Delay </option>
+                <option value="2" >Departure Delay </option>                
+            </select>
         </div>
+        <div id="calendar" class="clearfix"></div>
 
-        <aside id="totals"><span id="active">-</span> of <span id="total">-</span> flights selected.</aside>
-
-        <div id="lists">
-            <div id="flight-list" class="list"></div>
-        </div>
-
-        <footer>
-            <span style="float:right;">
-                Released under the <a href="http://www.apache.org/licenses/LICENSE-2.0.html">Apache License 2.0</a>.
-            </span>
-            Copyright 2012 <a href="http://squareup.com">Square, Inc.</a>
-        </footer>
-
-    </div>
-
-    <!--
-            <a href="https://github.com/square/crossfilter"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
-    --> 
-
-    <script src="crossfilter.v1.min.js"></script>
-    <script src="d3.v3.min.js"></script>
-    <script src="functions.js"></script>
-
-    <script>
-        // placeholder
-        main();
-    </script>
+        <!-- crossfilter -->
 
 
 
+        <script src="crossfilter.v1.min.js"></script>
+        <script src="d3.v3.min.js"></script>
+        <script src="functions.js"></script>
 
-</body>
+        <script>
+                    // placeholder
+                    main();
+        </script>
+
+    </body>
 </html>
