@@ -579,7 +579,7 @@ function bankai() {
                 .x(d3.scale.ordinal().domain(["", "AA", "AS", "B6", "DL", "EV", "UA", "US", "OO", "VX", "WN", "F9", "FL", "HA", "MQ"]))
                 //.x(d3.scale.ordinal().domain(data.map(function (d) {return d.carrier; })))
                 .xUnits(dc.units.ordinal)
-                .y(d3.scale.linear().domain([0, 100]))
+                .y(d3.scale.linear().domain([0, 200]))
                 .xAxis().tickFormat();
 
         //For sum of delay for each airport

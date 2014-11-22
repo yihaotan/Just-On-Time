@@ -191,7 +191,7 @@ function bankai() {
     dataTable = dc.dataTable("#dc-table-graph");
 
     //load data from a csv file 
-    d3.csv("crossfilter.csv", function(data) {
+    d3.csv("FINAL.csv", function(data) {
 
         //format our data 
         function parseDate(d) {
@@ -338,9 +338,36 @@ function bankai() {
             return d.carrier;
         });
 
-        var airlines = airline.group().reduceSum(function(d) {
-            return d.delay;
-        });
+        /*var  airlines = airline.group().reduceSum(function (d){
+         return d.delay;
+         });*/
+
+        var airlines = airline.group().reduce(
+                function(p, v) {
+                    p.delay = p.delay + v.delay;
+                    p.count = p.count + 1;
+                    p.carrier = p.carrier + v.carrier;
+                    p.avgDelay = Math.floor(p.delay / p.count);
+                    return p;
+                },
+                function(p, v) {
+                    p.delay = p.delay - v.delay;
+                    p.count = p.count - 1;
+                    p.carrier = p.carrier - v.carrier;
+                    p.avgDelay = Math.floor(p.delay / p.count);
+                    return p;
+                },
+                function() {
+
+                    return {
+                        delay: 0,
+                        count: 0,
+                        carrier: 0,
+                        avgDelay: 0
+                    };
+                }
+
+        );
 
         //For indivdual airport delays
         var airport = facts.dimension(function(d) {
@@ -446,7 +473,7 @@ function bankai() {
         iDelay
                 .width(450)
                 .height(150)
-                .margins({top: 10, right: 15, bottom: 20, left: 50})
+                .margins({top: 10, right: 20, bottom: 20, left: 50})
                 .transitionDuration(10)
                 .gap(1)
                 .dimension(delayByDay)
@@ -478,7 +505,7 @@ function bankai() {
                 .renderTitle(true)
                 .title(function(d) {
 
-            return  getDayofWeek(d.data.key) + " " + formatDate2(d.data.key) + "\n" + d.data.value.CarrierDelay;
+            return  getDayofWeek(d.data.key) + " " + formatDate2(d.data.key) + "\n" + d.data.value.CarrierDelay
 
         })
                 .title(function(d) {
@@ -502,15 +529,18 @@ function bankai() {
                 .dimension(delay)
                 .group(delays)
                 .renderArea(true)
-                .brushOn(false)			// added for title
+                //.brushOn(false)			// added for title
                 .title(function(d) {
             return ("Arrival Delay: " + (d.data.key) + " minutes")
                     + "\nFrequency: " + d.data.value;
         })
                 .elasticY(true)
-                .elasticX(true)
-                .x(d3.scale.linear().domain([0, 1600]))
+                //.elasticX(true)
+                .x(d3.scale.linear().domain([15, 200]))
                 .xAxis();
+
+
+
 
         //For day of week
         dayOfWeekChart.width(300)
@@ -531,20 +561,25 @@ function bankai() {
         //For sum of delay for each airline
         airlineDelayChart.width(320)
                 .height(240)
-                .margins({top: 10, right: 10, bottom: 20, left: 50})
+                .margins({top: 10, right: 10, bottom: 20, left: 60})
                 .dimension(airline)
                 .group(airlines)
                 .transitionDuration(10)
+                .valueAccessor(function(p) {
+
+            return p.value.avgDelay;
+        })
+
                 .renderTitle(true)
                 .title(function(d) {
-            return  d.data.key + ": " + d.data.value + " minutes";
+            return  d.data.key + ": " + d.data.value.avgDelay + " minutes";
         })
                 .centerBar(true)
                 .gap(1)
                 .x(d3.scale.ordinal().domain(["", "AA", "AS", "B6", "DL", "EV", "UA", "US", "OO", "VX", "WN", "F9", "FL", "HA", "MQ"]))
                 //.x(d3.scale.ordinal().domain(data.map(function (d) {return d.carrier; })))
                 .xUnits(dc.units.ordinal)
-                .elasticY(true)
+                .y(d3.scale.linear().domain([0, 200]))
                 .xAxis().tickFormat();
 
         //For sum of delay for each airport
@@ -594,7 +629,7 @@ function bankai() {
 
 
 
-        //Render the thing
+        //Render the shit
         dc.renderAll();
 
 
