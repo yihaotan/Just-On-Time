@@ -87,7 +87,8 @@ function init_map(map, nodes, edges) {
     // ===================================================================================================
     function onEachNode(feature, layer) {
         if (feature.properties && feature.properties.out_num) {
-            layer.bindPopup(feature.properties.LABEL);
+            var num = feature.properties.out_num
+            layer.bindPopup(feature.properties.LABEL + " is the source of " + num + " departure delays");
         }
     }
     var geojsonMarkerOptions = {
