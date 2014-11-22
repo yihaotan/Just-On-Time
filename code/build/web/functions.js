@@ -40,6 +40,51 @@ function init_map(map, nodes, edges) {
         maxZoom: 18
     }).addTo(map);
     // ===================================================================================================
+    function onEachEdge(feature, layer) {
+        if (feature.properties.COUNT > 100) {
+            var count = feature.properties.COUNT;
+            var origin = feature.properties.ORIGIN_LABEL;
+            var destination = feature.properties.DESTINATION_LABEL;
+            layer.bindPopup("There are " + count + " delayed flights from " + origin + " to " + destination);
+        }
+    }
+    L.geoJson(edges, {
+        onEachFeature: onEachEdge,
+        style: function(feature) {
+            var num = parseFloat(feature.properties.COUNT);
+            if (num > 200) {
+                return {
+                    "color": "#FF0000",
+                    "weight": num / 40,
+                    "opacity": 0.6
+                };
+            } else if (num > 150) {
+                return {
+                    "color": "#F88017",
+                    "weight": num / 60,
+                    "opacity": 0.4
+                };
+            } else if (num > 100) {
+                return {
+                    "color": "#FFFF00",
+                    "weight": num / 80,
+                    "opacity": 0.2
+                };
+            } else if (num > 50) {
+                return {
+                    "color": "#CCFB5D",
+                    "weight": num / 80,
+                    "opacity": 0.1
+                };
+            }
+            return {
+                "color": "#00FF00",
+                "weight": num / 80,
+                "opacity": 0.1
+            };
+        }
+    }).addTo(map);
+    // ===================================================================================================
     function onEachNode(feature, layer) {
         if (feature.properties && feature.properties.out_num) {
             layer.bindPopup(feature.properties.LABEL);
@@ -61,62 +106,18 @@ function init_map(map, nodes, edges) {
         style: function(feature) {
             var num = parseFloat(feature.properties.out_num);
             if (num > 3000) {
-                return {fillColor: "#FF0000"};
+                return {fillColor: "#FF0000", radius: num / 400};
             } else if (num > 2000) {
-                return {fillColor: "#F88017"};
+                return {fillColor: "#F88017", radius: num / 400};
             } else if (num > 1000) {
-                return {fillColor: "#FFFF00"};
+                return {fillColor: "#FFFF00", radius: num / 400};
             } else if (num > 500) {
-                return {fillColor: "#CCFB5D"};
+                return {fillColor: "#CCFB5D", radius: num / 400};
             }
-            return {fillColor: "#00FF00"};
+            return {fillColor: "#00FF00", radius: num / 400};
         }
     }).addTo(map);
-    // ===================================================================================================
-    function onEachEdge(feature, layer) {
-        if (feature.properties && feature.properties.COUNT) {
-            var count = feature.properties.COUNT;
-            var origin = feature.properties.ORIGIN_ID;
-            var destination = feature.properties.DESTINATION_ID;
-            layer.bindPopup("There are " + count + " delayed flights from " + origin + " to " + destination);
-        }
-    }
-    L.geoJson(edges, {
-        onEachFeature: onEachEdge,
-        style: function(feature) {
-            var num = parseFloat(feature.properties.COUNT);
-            if (num > 200) {
-                return {
-                    "color": "#FF0000",
-                    "weight": 2,
-                    "opacity": 0.65
-                };
-            } else if (num > 150) {
-                return {
-                    "color": "#F88017",
-                    "weight": 1,
-                    "opacity": 0.65
-                };
-            } else if (num > 100) {
-                return {
-                    "color": "#FFFF00",
-                    "weight": 0.5,
-                    "opacity": 0.65
-                };
-            } else if (num > 50) {
-                return {
-                    "color": "#CCFB5D",
-                    "weight": 0.2,
-                    "opacity": 0.65
-                };
-            }
-            return {
-                "color": "#00FF00",
-                "weight": 0.1,
-                "opacity": 0.65
-            };
-        }
-    }).addTo(map);
+    
 }
 
 
@@ -153,7 +154,7 @@ function node(csv) {
 function edge(csv) {
     var lines = csv.split("\n");
     var result = [];
-    var headers = ["ORIGIN_ID", "DESTINATION_ID", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
+    var headers = ["ORIGIN_ID", "ORIGIN_LABEL", "DESTINATION_ID", "DESTINATION_LABEL", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
     for (var i = 1; i < lines.length; i++) {
         var properties = {};
         var currentline = lines[i].split(",");
