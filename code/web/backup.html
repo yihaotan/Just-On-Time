@@ -132,6 +132,11 @@
                 border: 2px solid #ccc;
                 padding: 10px;
             }
+
+
+
+
+
         </style>
 
     </head>
@@ -232,12 +237,10 @@
     </div>
     <div class="panel-body">
         <p>
-            Users are able to see the time frame for which flight delays occur. Heat map is incorporated so that users can tell the days/ weeks/ months with most severe flight delay.
+Users are able to see the time frame for which flight delays occur. Heat map is incorporated so that users can tell the days/ weeks/ months with most severe flight delay.
         </p></div>
 </div>
 <div>        
-    Airport: 
-    <p  id ="airport_name">Airport Name</p>
     <select name="calendar_select" id="calendar_select" onchange ="load(this.value)" onload="chartTitle()" >
         <!--<option value="0" selected="selected" >Total Cancellation </option>-->
         <option value="1" >Arrival Delay </option>
@@ -253,7 +256,7 @@
     </div>
     <div class="panel-body">
         <p>
-            Cross-filter allows users to zoom in a particular selected period of time and examine the details of flight delays during such periods. These details include causes of flight delay, the extent of delay and individual airlines' responsibility. 
+Cross-filter allows users to zoom in a particular selected period of time and examine the details of flight delays during such periods. These details include causes of flight delay, the extent of delay and individual airlines' responsibility. 
         </p>
         <div class="dc-data-count" style="float: center;">
             <h2>High-Dimensional Analysis of Delay Data - 
@@ -272,7 +275,7 @@
     <div class='row'>
         <div class='span6' id='dc-totalDelay-chart'>
             <h4>
-                Total arrival delay per day (minutes)
+                Total arrival delay per day (mins)
                 <span>
                     <a class="reset"
                        href="javascript:totalDelayChart.filterAll();dc.redrawAll();"
@@ -284,7 +287,7 @@
         </div>
         <div class='span6' id='iDelay'>
             <h4>
-                Individual causes of arrival delay (minutes)
+                Individual causes of arrival delay (mins)
                 <span>
                     <a class="reset"
                        href="javascript:iDelay.filterAll();dc.redrawAll();"
@@ -312,11 +315,11 @@
     </div>
     <div class='row'>
         <div class='span4' id='dc-airlineDelay-chart'>
-            <h4>Arrival delay of carriers (minutes)</h4>
+            <h4>Avg Delay per Flight by Carriers (mins)</h4>
         </div> 
         <div class='span4' id='dc-delayFrequency-chart'>
             <h4>
-                Frequency of arrival delay (minutes)
+                Frequency of arrival delay (mins)
                 <span>
                     <a class="reset"
                        href="javascript:delayFrequencyChart.filterAll();dc.redrawAll();"
@@ -369,8 +372,8 @@
         }).addTo(map);
         main(map);
 
-        var width = 300,
-                height = 250,
+        var width = 960,
+                height = 750,
                 cellSize = 25; // cell size
 
         //var no_months_in_a_row = Math.floor(width / (cellSize * 7 + 50));
@@ -386,9 +389,12 @@
                 percent = d3.format(".1%"),
                 format = d3.time.format("%Y-%m-%d");
 
+
+        var minColor = 3300;
+        var maxColor = 9900;
+
         var svg = d3.select("#calendar").selectAll("svg")
-                //.data(d3.range(2014.1,2014.2))
-                .data([2014])
+                .data(d3.range(2014, 2015))
                 .enter().append("svg")
                 .attr("width", width)
                 .attr("height", height)
@@ -397,7 +403,7 @@
 
         var rect = svg.selectAll(".day")
                 .data(function(d) {
-            return d3.time.days(new Date("2014-01-01"), new Date("2014-01-31"));
+            return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1));
         })
                 .enter().append("rect")
                 .attr("class", "day")
@@ -416,7 +422,7 @@
 
         var month_titles = svg.selectAll(".month-title")  // Jan, Feb, Mar and the whatnot
                 .data(function(d) {
-            return d3.time.months(new Date("2014-01-01"), new Date("2014-01-31"));
+            return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1));
         })
                 .enter().append("text")
                 .text(monthTitle)
@@ -434,7 +440,7 @@
 
         var year_titles = svg.selectAll(".year-title")  // Jan, Feb, Mar and the whatnot
                 .data(function(d) {
-            return d3.time.years(new Date("2013-01-01"), new Date("2014-01-01"));
+            return d3.time.years(new Date(d, 0, 1), new Date(d + 1, 0, 1));
         })
                 .enter().append("text")
                 .text(yearTitle)
@@ -456,42 +462,40 @@
                 .text("a simple tooltip");
 
         load(1);
-        
-        var test="";
-       
-        function load(value) {
-            //var airport = "All";    //hard-coded for now
-            var airport = "Lehigh Valley International";    //hard-coded for now
-            document.getElementById("airport_name").innerHTML = airport;
 
-            var csvFileName = "";
-            if (value == 1) {
-                csvFileName = "arr_delay_airport.csv";
-            }
-            else {
-                csvFileName = "dept_delay_airport.csv";
-            }
-            
-            d3.csv(csvFileName, function(error, csv) {
+        function load(value) {
+            d3.csv("calendar.csv", function(error, csv) {
                 var data = d3.nest()
-                        .key(function(d) {return d.Date;})
-                        .rollup(function(d) {return d[0][airport];})
+                        .key(function(d) {
+                    return d.Date;
+                })
+                        .rollup(function(d) {
+                    if (value == 1) {
+                        return d[0].ArrDelay;
+                    } else if (value == 2) {
+                        return d[0].DeptDelay;
+                    } else {
+                        return d[0].TotalCancel;
+                    }
+                })
                         .map(csv);
-                
-                var color = d3.scale.quantile()
-                            .domain(d3.extent(csv, function(d) { return d[airport]; }))
-                            .range(d3.range(11).map(function(d) {return "q" + d + "-11";}));   
-                    
-                rect.filter(function(d) { return d in data;})
+
+
+                rect.filter(function(d) {
+                    return d in data;
+                })
                         .attr("class", function(d) {
-                            return "day " + color(data[d]);})
+                    return "day " + color(data[d]);
+                })
                         .select("title")
-                        .text(function(d) {return d + ": " + percent(data[d]);});
-                
-    //  Tooltip
+                        .text(function(d) {
+                    return d + ": " + percent(data[d]);
+                });
+
+
+                //  Tooltip
                 rect.on("mouseover", mouseover);
                 rect.on("mouseout", mouseout);
-
                 function mouseover(d) {
                     tooltip.style("visibility", "visible");
                     var percent_data = (data[d] !== undefined) ? (data[d]) : (0);
@@ -511,9 +515,15 @@
                     var $tooltip = $("#tooltip");
                     $tooltip.empty();
                 }
-            }
-);
+            });
         }
+
+
+        var color = d3.scale.quantize()
+                .domain([minColor, maxColor])
+                .range(d3.range(11).map(function(d) {
+            return "q" + d + "-11";
+        }));
 
         function dayTitle(t0) {
             return t0.toString().split(" ")[2];
