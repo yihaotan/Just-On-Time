@@ -1,7 +1,17 @@
 function main(map) {
-    init_upload(map);
+    new_init_upload(map);
     bankai();
 }
+
+function new_init_upload(map){
+
+   var nodes = node ("NODE.csv")
+   var edges = edge("EDGE.csv")
+   init_map(map, nodes, edges);
+
+}
+
+
 
 function init_upload(map) {
     var inputElement = document.getElementById("input");
