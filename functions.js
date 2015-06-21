@@ -1,47 +1,87 @@
+var nodeResult;
+var edgeResult;
 function main(map) {
-    new_init_upload(map);
     bankai();
+    new_init_map(map);
+   
 }
-
-function new_init_upload(map){
-
-   var nodes = node ("NODE.csv")
-   var edges = edge("EDGE.csv")
-   init_map(map, nodes, edges);
-
-}
-
-
-
-function init_upload(map) {
-    var inputElement = document.getElementById("input");
-    inputElement.addEventListener("change", handleFiles, false);
-    function handleFiles() {
-        var fileList = this.files; /* now you can work with the file list */
-        var edge_file;
-        var node_file;
-        var first_file = fileList[0];
-        var second_file = fileList[1];
-        if (first_file.name === 'EDGE.csv') {
-            edge_file = first_file;
-            node_file = second_file;
-        } else {
-            edge_file = second_file;
-            node_file = first_file;
-        }
-        var edge_reader = new FileReader();
-        edge_reader.readAsText(edge_file);
-        edge_reader.onload = function() {
-            var edges = edge(edge_reader.result);
-            var node_reader = new FileReader();
-            node_reader.readAsText(node_file);
-            node_reader.onload = function() {
-                var nodes = node(node_reader.result);
-                init_map(map, nodes, edges);
+function new_init_map(map){
+   
+   //var nodeResult;
+   //var edgeResult;
+    d3.csv("NODE.csv", function(data) {
+        var result =[];   
+       //var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
+        data.forEach(function(d,i){
+            var properties = {};
+            properties["ID"] = d.AIRPORT_ID;
+            properties["LABEL"] = d.LABEL;
+            //airportArray.push(d.Label);
+            properties["N"] = d.Northing;
+            properties["W"] =d.Westing;
+            properties["E"] = d.Easting;
+            properties["out_num"] = d.Delay_No_Outgoing;
+            properties["out_min"] = d.Delay_Min_Outgoing;
+            properties["in_num"] = d.Delay_No_Incoming;
+            properties["in_min"] = d.Delay_Min_Incoming;
+            var north_str = properties["N"];
+            var west_str = properties["W"];
+            var east_str = properties["E"];
+            var north = parseFloat(north_str);
+            var west = parseFloat(west_str);
+            var east = parseFloat(east_str);
+            var node = {
+                "type": "Feature",
+                "properties": properties,
+                "geometry": {
+                    "type": "Point",
+                    "coordinates": [east, north]
+                }
             };
-        };
-    }
-}
+            result.push(node);
+        });
+        nodeResult = result;
+        //alert(nodeResult[0].properties.LABEL);
+    });
+    
+    d3.csv("EDGE.csv", function(data) {
+        //var headers = ["ORIGIN_ID", "ORIGIN_LABEL", "DESTINATION_ID", "DESTINATION_LABEL", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
+        var result =[];
+        data.forEach(function(d,i){
+            var properties = {};
+            properties["ORIGIN_ID"] = d.ORIGIN_ID;
+            properties["ORIGIN_LABEL"] = d.ORIGIN_LABEL;
+            properties["DESTINATION_ID"] = d.DESTINATION_ID;
+            properties["DESTINATION_LABEL"] =d.DESTINATION_LABEL;
+            properties["ORIGIN_N"] = d.ORIGIN_N;
+            properties["ORIGIN_E"] = d.ORIGIN_E;
+            properties["DESTINATION_N"] = d.DESTINATION_N;
+            properties["DESTINATION_E"] = d.DESTINATION_E;
+            properties["COUNT"] = d.COUNT;
+            var origin_n = parseFloat(properties["ORIGIN_N"]);
+            var origin_e = parseFloat(properties["ORIGIN_E"]);
+            var destination_n = parseFloat(properties["DESTINATION_N"]);
+            var destination_e = parseFloat(properties["DESTINATION_E"]);
+            var start = [origin_e,origin_n];
+            var end = [destination_e, destination_n];
+            var edge = {
+                "type": "Feature",
+                "properties": properties,
+                "geometry": {
+                    "type": "LineString",
+                    "coordinates": [start, end]
+                }
+            };
+            result.push(edge);
+            
+        });
+        
+        edgeResult = result;
+        init_map(map,nodeResult,edgeResult);
+     });
+    
+ }
+
 
 function init_map(map, nodes, edges) {
     //var map = L.map('map').setView([40, 260], 4);
@@ -58,6 +98,8 @@ function init_map(map, nodes, edges) {
             layer.bindPopup("<b>From:</b> " + origin + " Airport<br/> <b>To:</b> " + destination + " Airport<br/> <b>No. of Departure Delays:</b> " + count + " flights");
         }
     }
+   
+    
     L.geoJson(edges, {
         onEachFeature: onEachEdge,
         style: function(feature) {
@@ -97,7 +139,7 @@ function init_map(map, nodes, edges) {
     // ===================================================================================================
     var in_or_out = document.getElementById("in_or_out");
     var input = in_or_out.options[in_or_out.selectedIndex].value;
-
+   
     function onEachNode(feature, layer) {
         var num;
         var cat;
@@ -111,8 +153,8 @@ function init_map(map, nodes, edges) {
         var label = feature.properties.LABEL;
         var descr = "is the" + cat + num + " departure delays.";
         layer.bindPopup();
-        layer.bindPopup($('<a href="#" class="special_link">' + label + '</a>').click(function() {
-            update_airport(label, descr);
+        layer.bindPopup($('<a href="#cal" class="special_link">' + label + '</a>').click(function() {
+            update_airport(descr);
         })[0]);
 
     }
@@ -152,66 +194,6 @@ function init_map(map, nodes, edges) {
         }
     }).addTo(map);
 
-}
-
-
-// This method converts a csv (as Text String) into a well-formed JSON object
-function node(csv) {
-    var lines = csv.split("\n");
-    var result = [];
-    var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
-    for (var i = 1; i < lines.length; i++) {
-        var properties = {};
-        var currentline = lines[i].split(",");
-        for (var j = 0; j < headers.length; j++) {
-            properties[headers[j]] = currentline[j];
-        }
-        var north_str = properties["N"];
-        var west_str = properties["W"];
-        var east_str = properties["E"];
-        var north = parseFloat(north_str);
-        var west = parseFloat(west_str);
-        var east = parseFloat(east_str);
-        var node = {
-            "type": "Feature",
-            "properties": properties,
-            "geometry": {
-                "type": "Point",
-                "coordinates": [east, north]
-            }
-        };
-        result.push(node);
-    }
-    return result;
-}
-
-function edge(csv) {
-    var lines = csv.split("\n");
-    var result = [];
-    var headers = ["ORIGIN_ID", "ORIGIN_LABEL", "DESTINATION_ID", "DESTINATION_LABEL", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
-    for (var i = 1; i < lines.length; i++) {
-        var properties = {};
-        var currentline = lines[i].split(",");
-        for (var j = 0; j < headers.length; j++) {
-            properties[headers[j]] = currentline[j];
-        }
-        var origin_n = parseFloat(properties["ORIGIN_N"]);
-        var origin_e = parseFloat(properties["ORIGIN_E"]);
-        var destination_n = parseFloat(properties["DESTINATION_N"]);
-        var destination_e = parseFloat(properties["DESTINATION_E"]);
-        var start = [origin_e, origin_n];
-        var end = [destination_e, destination_n];
-        var edge = {
-            "type": "Feature",
-            "properties": properties,
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [start, end]
-            }
-        };
-        result.push(edge);
-    }
-    return result;
 }
 
 function bankai() {
@@ -662,13 +644,98 @@ function bankai() {
         })
                 .order(d3.ascending);
 
-
-
         //Render the shit
         dc.renderAll();
-
-
     });
+};
 
+// This method converts a csv (as Text String) into a well-formed JSON object
+function node(csv) {
+    var lines = csv.split("\n");
+    var result = [];
+    var headers = ["ID", "LABEL", "N", "W", "E", "out_num", "out_min", "in_num", "in_min"];
+    for (var i = 1; i < lines.length; i++) {
+        var properties = {};
+        var currentline = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+            properties[headers[j]] = currentline[j];
+        }
+        var north_str = properties["N"];
+        var west_str = properties["W"];
+        var east_str = properties["E"];
+        var north = parseFloat(north_str);
+        var west = parseFloat(west_str);
+        var east = parseFloat(east_str);
+        var node = {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": {
+                "type": "Point",
+                "coordinates": [east, north]
+            }
+        };
+        result.push(node);
+    }
+    return result;
 }
-;
+
+function edge(csv) {
+    var lines = csv.split("\n");
+    var result = [];
+    var headers = ["ORIGIN_ID", "ORIGIN_LABEL", "DESTINATION_ID", "DESTINATION_LABEL", "ORIGIN_N", "ORIGIN_E", "DESTINATION_N", "DESTINATION_E", "COUNT"];
+    for (var i = 1; i < lines.length; i++) {
+        var properties = {};
+        var currentline = lines[i].split(",");
+        for (var j = 0; j < headers.length; j++) {
+            properties[headers[j]] = currentline[j];
+        }
+        var origin_n = parseFloat(properties["ORIGIN_N"]);
+        var origin_e = parseFloat(properties["ORIGIN_E"]);
+        var destination_n = parseFloat(properties["DESTINATION_N"]);
+        var destination_e = parseFloat(properties["DESTINATION_E"]);
+        var start = [origin_e, origin_n];
+        var end = [destination_e, destination_n];
+        var edge = {
+            "type": "Feature",
+            "properties": properties,
+            "geometry": {
+                "type": "LineString",
+                "coordinates": [start, end]
+            }
+        };
+        result.push(edge);
+    }
+    return result;
+}
+
+//For uploading files (eliminate this part, auto upload for convienience)
+/*function init_upload(map) {
+    
+    var inputElement = document.getElementById("input");
+    inputElement.addEventListener("change", handleFiles, false);
+    function handleFiles() {
+        var fileList = this.files; /* now you can work with the file list */
+        /*var edge_file;
+        var node_file;
+        var first_file = fileList[0];
+        var second_file = fileList[1];
+        if (first_file.name === 'EDGE.csv') {
+            edge_file = first_file;
+            node_file = second_file;
+        } else {
+            edge_file = second_file;
+            node_file = first_file;
+        }
+        var edge_reader = new FileReader();
+        edge_reader.readAsText(edge_file);
+        edge_reader.onload = function() {
+            var edges = edge(edge_reader.result);
+            var node_reader = new FileReader();
+            node_reader.readAsText(node_file);
+            node_reader.onload = function() {
+                var nodes = node(node_reader.result);
+                init_map(map, nodes, edges);
+            };
+        };
+    }
+}*/

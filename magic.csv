@@ -1,0 +1,302 @@
+Airports,Arr_Delay,Dep_Delay
+Lehigh Valley International,57,39
+Abilene Regional,61,58
+Albuquerque International Sunport,818,860
+Aberdeen Regional,17,18
+Southwest Georgia Regional,19,20
+Waco Regional,35,28
+Arcata,77,74
+Adak,4,5
+Kodiak Airport,8,7
+Alexandria International,106,91
+Augusta Regional at Bush Field,93,74
+Albany International,319,252
+Waterloo Regional,23,21
+Rick Husband Amarillo International,242,243
+Ted Stevens Anchorage International,422,312
+Alpena County Regional,20,15
+Watertown International,21,21
+Aspen Pitkin County Sardy Field,269,240
+Hartsfield-Jackson Atlanta International,13196,14891
+Outagamie County Regional,90,74
+Austin - Bergstrom International,1424,1502
+Asheville Regional,91,60
+Wilkes Barre Scranton International,29,22
+Kalamazoo/Battle Creek International,5,4
+Bradley International,913,739
+Bethel Airport,26,22
+Meadows Field,90,64
+Bangor International,18,13
+Birmingham-Shuttlesworth International,470,461
+Billings Logan International,71,56
+Bismarck Municipal,80,64
+Bemidji Regional,27,20
+Branson Airport,39,33
+Bellingham International,17,16
+Central Illinois Regional,106,88
+Nashville International,2299,2357
+Boise Air Terminal,321,283
+Logan International,3717,3140
+Jack Brooks Regional,25,19
+Brunswick Golden Isles,40,20
+Rafael Hernandez,32,40
+Brainerd Lakes Regional,37,25
+Brownsville South Padre Island International,64,52
+Wiley Post/Will Rogers Memorial,45,29
+Bert Mooney,21,14
+Baton Rouge Metropolitan/Ryan Field,230,197
+Burlington International,132,113
+Buffalo Niagara International,680,565
+Bob Hope,644,750
+Baltimore/Washington International Thurgood Marshall,4037,4539
+Bozeman Yellowstone International,108,95
+Columbia Metropolitan,215,184
+Akron-Canton Regional,240,170
+Cedar City Regional,17,10
+Merle K Mudhole Smith,10,8
+Jack McNamara Field,25,17
+Lovell Field,106,74
+Charlottesville Albemarle,37,23
+Charleston AFB/International,364,340
+Chico Municipal,45,31
+The Eastern Iowa,221,223
+McClellan-Palomar,73,53
+Cleveland-Hopkins International,1519,1351
+Easterwood Field,56,41
+Charlotte Douglas International,4069,4022
+Port Columbus International,1064,957
+University of Illinois/Willard,96,75
+Houghton County Memorial,31,20
+Yellowstone Regional,20,23
+City of Colorado Springs Municipal,273,208
+Columbia Regional,50,39
+Casper/Natrona County International,68,47
+Corpus Christi International,215,198
+Yeager,97,92
+Columbus Airport,30,26
+Cincinnati/Northern Kentucky International,722,603
+Central Wisconsin,58,39
+Daytona Beach International,41,46
+Dallas Love Field,2100,2574
+James M Cox/Dayton International,365,291
+Dubuque Regional,16,11
+Ronald Reagan Washington National,2446,1950
+Denver International,10191,10972
+Dallas/Fort Worth International,10266,10212
+Dothan Regional,42,37
+Dickinson - Theodore Roosevelt Regional,71,40
+Duluth International,57,44
+Durango La Plata County,62,49
+Des Moines International,418,434
+Detroit Metro Wayne County,3848,3536
+Chippewa Valley Regional,14,15
+Northwest Florida Beaches International,92,78
+Eagle County Regional,92,106
+Elko Regional,10,14
+Elmira/Corning Regional,28,24
+El Paso International,554,530
+Mahlon Sweet Field,166,111
+Evansville Regional,97,93
+Coastal Carolina Regional,18,14
+Newark Liberty International,4609,4628
+Key West International,154,177
+Fairbanks International,73,52
+Hector International,214,206
+Fresno Yosemite International,333,272
+Fayetteville Regional/Grannis Field,74,59
+Glacier Park International,56,45
+Flagstaff Pulliam,20,14
+Fort Lauderdale-Hollywood International,2767,3303
+Bishop International,146,124
+Forbes Field,36,20
+Joe Foss Field,256,228
+Fort Smith Regional,77,54
+Fort Wayne International,137,108
+Gillette Campbell County,45,37
+Garden City Regional,16,16
+Spokane International,259,243
+Grand Forks International,2,0
+East Texas Regional,24,22
+Grand Junction Regional,66,57
+Gainesville Regional,91,74
+Gulfport-Biloxi International,136,115
+Austin Straubel International,133,114
+Central Nebraska Regional,19,20
+Robert Gray AAF,109,97
+Gerald R. Ford International,436,371
+Piedmont Triad International,241,181
+Greenville-Spartanburg International,232,205
+Great Falls International,47,41
+Golden Triangle Regional,31,24
+Gunnison-Crested Butte Regional,34,32
+Guam International,16,15
+Yampa Valley,69,57
+Range Regional,15,10
+Helena Regional,35,29
+Honolulu International,985,966
+Lea County Regional,16,15
+William P Hobby,2659,3083
+Westchester County,344,261
+Valley International,160,144
+Huntsville International-Carl T Jones Field,218,194
+Washington Dulles International,2387,2531
+George Bush Intercontinental/Houston,5932,6967
+Wichita Mid-Continent,324,291
+Idaho Falls Regional,82,67
+New Castle,48,40
+Wilmington International,60,48
+Ford,27,22
+Indianapolis International,1073,1023
+Falls International,20,14
+Sloulin Field International,79,79
+Long Island MacArthur,274,280
+Hilo International,184,91
+Jackson Hole,154,128
+Jackson Medgar Wiley Evers International,278,232
+Jacksonville International,740,729
+John F. Kennedy International,3708,3694
+Joplin Regional,22,15
+Juneau International,84,88
+Kona International Airport at Keahole,282,209
+Ketchikan International,47,50
+Capital Region International,48,37
+Laramie Regional,36,13
+McCarran International,4907,5930
+Lawton-Fort Sill Regional,16,16
+Los Angeles International,7594,7611
+Lubbock Preston Smith International,168,186
+Lake Charles Regional,45,39
+Blue Grass,178,148
+Lafayette Regional,167,136
+LaGuardia,3760,3285
+Long Beach Airport,278,242
+Lihue Airport,245,186
+Bill and Hillary Clinton Nat Adams Field,489,422
+Klamath Falls Airport,18,11
+Lincoln Airport,72,66
+Laredo International,57,46
+La Crosse Municipal,34,39
+Lewiston Nez Perce County,11,11
+Midland International,311,266
+MBS International,37,23
+Kansas City International,1566,1740
+Orlando International,4209,5021
+Harrisburg International,158,114
+Chicago Midway International,3430,4121
+Memphis International,521,501
+McAllen Miller International,128,120
+Rogue Valley International - Medford,79,76
+Montgomery Regional,78,71
+Manhattan Regional,55,38
+Manchester-Boston Regional,289,241
+Miami International,2813,3148
+General Mitchell International,1381,1317
+Muskegon County,25,15
+Melbourne International,44,45
+Quad City International,178,142
+Monroe Regional,95,78
+Mammoth Lakes Airport,20,16
+Mobile Regional,186,148
+Modesto City-County-Harry Sham Field,41,36
+Minot International,62,59
+Sawyer International,17,17
+Monterey Regional,129,99
+Dane County Regional-Truax Field,324,277
+Missoula International,79,68
+Minneapolis-St Paul International,3556,3497
+Louis Armstrong New Orleans International,1406,1551
+Montrose Regional,58,62
+Myrtle Beach International,44,31
+Albert J Ellis,46,38
+Metropolitan Oakland International,1473,1836
+Kahului Airport,543,442
+Will Rogers World,690,646
+Eppley Airfield,632,637
+Nome Airport,19,16
+Ontario International,663,707
+Chicago O'Hare International,11148,11968
+Norfolk International,458,354
+Worcester Regional,33,17
+Southwest Oregon Regional,11,14
+Ralph Wien Memorial,24,13
+Barkley Regional,18,9
+Palm Beach International,963,1124
+Portland International,1464,1348
+Newport News/Williamsburg International,87,57
+Philadelphia International,2932,2615
+Phoenix Sky Harbor International,5894,5766
+General Downing - Peoria International,127,107
+Pocatello Regional,30,31
+Pittsburgh International,979,833
+Pensacola International,232,198
+Pago Pago International,3,4
+Tri Cities,83,40
+Mercedita,25,30
+Petersburg James A Johnson,12,16
+Palm Springs International,443,392
+Theodore Francis Green State,411,341
+Portland International Jetport,177,112
+Rapid City Regional,82,77
+Redding Municipal,32,19
+Roberts Field,73,51
+Raleigh-Durham International,1310,1246
+Rhinelander/Oneida County,27,26
+Richmond International,484,408
+Rock Springs Sweetwater County,49,42
+Reno/Tahoe International,434,475
+Roanoke Regional/Woodrum Field,78,60
+Greater Rochester International,354,302
+Roswell International Air Center,19,16
+Rochester International,16,12
+Southwest Florida International,1102,1229
+Santa Fe Municipal,65,44
+San Diego International,2578,2661
+San Antonio International,1197,1145
+Savannah/Hilton Head International,227,216
+Santa Barbara Municipal,283,231
+South Bend International,126,114
+San Luis County Regional,145,111
+Deadhorse Airport,33,20
+University Park,30,22
+Louisville International-Standiford Field,507,465
+Seattle/Tacoma International,2732,2760
+San Francisco International,5145,5217
+Springfield-Branson National,251,220
+St George Municipal,50,38
+Shreveport Regional,212,176
+Sitka Rocky Gutierrez,24,31
+Norman Y. Mineta San Jose International,1243,1259
+San Angelo Regional/Mathis Field,46,40
+Luis Munoz Marin International,942,1153
+Salt Lake City International,3281,3036
+Sacramento International,1388,1537
+Santa Maria Public/Capt. G. Allan Hancock Field,30,21
+John Wayne Airport-Orange County,1215,1373
+Abraham Lincoln Capital,87,52
+Sheppard AFB/Wichita Falls Municipal,23,23
+Sarasota/Bradenton International,130,142
+Lambert-St. Louis International,2101,2301
+Cyril E King,154,169
+Henry E. Rohlsen,46,39
+Friedman Memorial,37,46
+Sioux Gateway/Col. Bud Day Field,20,21
+Stewart International,38,16
+Syracuse Hancock International,266,227
+Tallahassee Regional,165,147
+Toledo Express,34,26
+Tampa International,2495,2765
+Tri-Cities Regional TN/VA,65,54
+Trenton Mercer,89,70
+Tulsa International,622,616
+Tucson International,561,471
+Cherry Capital,58,43
+Joslin Field - Magic Valley Regional,47,20
+Texarkana Regional-Webb Field,24,18
+Tyler Pounds Regional,49,43
+McGhee Tyson,276,226
+Valdosta Regional,29,23
+Northwest Florida Regional,146,129
+Wrangell Airport,8,12
+Northwest Arkansas Regional,324,268
+Yakutat Airport,16,13
+Yuma MCAS/Yuma International,65,54
