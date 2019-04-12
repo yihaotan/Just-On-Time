@@ -6,13 +6,13 @@ In this project, our team will make use of data visualization techniques to help
 
 Demo: http://d3usairlinedelay.herokuapp.com/
 
-##Core Features 
+## Core Features 
 - Crossfilter feature
 - Calendar View of arrival and departure delays in airports
 - Geospatial feature
 
-##Architecture
+## Architecture
 Just-On-Time dashboard uses BootStrap / Javascript for the front-end, D3 for the chart and calendars features and Leaflet for the geospatial feature.
 
-##Poster
+## Poster
 ![ScreenShot](/Just-On-Time_Poster.jpg)
